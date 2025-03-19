@@ -2,6 +2,7 @@ package service;
 
 import domain.Mouleuse;
 import domain.enums.EtapeMouleuse;
+import domain.enums.GroupeDeChocolatier;
 import repository.MouleuseRepository;
 
 import java.util.List;
@@ -15,8 +16,8 @@ public class MouleuseService {
         this.mouleuseRepository = mouleuseRepository;
     }
 
-    public void creerMouleuse(int id) {
-        Mouleuse mouleuse = new Mouleuse(id);
+    public void creerMouleuse(int id, GroupeDeChocolatier groupeDeChocolatier) {
+        Mouleuse mouleuse = new Mouleuse(id, groupeDeChocolatier);
         mouleuseRepository.save(mouleuse);
     }
 

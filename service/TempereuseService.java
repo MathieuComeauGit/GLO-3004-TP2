@@ -2,6 +2,7 @@ package service;
 
 import domain.Tempereuse;
 import domain.enums.EtapeTempereuse;
+import domain.enums.GroupeDeChocolatier;
 import repository.TempereuseRepository;
 
 import java.util.List;
@@ -15,8 +16,8 @@ public class TempereuseService {
         this.tempereuseRepository = tempereuseRepository;
     }
 
-    public void creerTempereuse(int id) {
-        Tempereuse tempereuse = new Tempereuse(id);
+    public void creerTempereuse(int id, GroupeDeChocolatier groupeDeChocolatier) {
+        Tempereuse tempereuse = new Tempereuse(id, groupeDeChocolatier);
         tempereuseRepository.save(tempereuse);
     }
 

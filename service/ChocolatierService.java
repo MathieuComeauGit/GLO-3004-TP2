@@ -1,7 +1,7 @@
 package service;
 
 import domain.ChocolatierR;
-import domain.enums.Provenance;
+import domain.enums.GroupeDeChocolatier;
 import repository.ChocolatierRepository;
 import repository.ChocolatRepository;
 
@@ -17,7 +17,7 @@ public class ChocolatierService {
         this.chocolatRepository = chocolatRepository;
     }
 
-    public ChocolatierR creerChocolatier(Provenance provenance) {
+    public ChocolatierR creerChocolatier(GroupeDeChocolatier provenance) {
         ChocolatierR chocolatier = new ChocolatierR(provenance);
         chocolatierRepository.save(chocolatier);
         return chocolatier;
@@ -37,12 +37,12 @@ public class ChocolatierService {
 
     public void faireGarniture(UUID chocolatierId) {
         ChocolatierR chocolatier = chocolatierRepository.findById(chocolatierId);
-        if (chocolatier != null && !chocolatier.isEnRupture()) {
+        if (chocolatier != null) {
             boolean success = chocolatRepository.consommer(1);
             if (success) {
                 // TODO: Coder ce qu'implique le fait de faire la garniture
-            } else {
-                chocolatier.setEnRupture(true);
+            } 
+            else {
             }
         } 
     }
@@ -51,10 +51,4 @@ public class ChocolatierService {
         chocolatRepository.approvisionner(quantite);
     }
 
-    public void debloquerChocolatier(UUID chocolatierId) {
-        ChocolatierR chocolatier = chocolatierRepository.findById(chocolatierId);
-        if (chocolatier != null) {
-            chocolatier.setEnRupture(false);
-        }
-    }
 }

@@ -1,6 +1,6 @@
 package domain.enums;
 
-public enum Provenance {
+public enum GroupeDeChocolatier {
     n, 
     b  
 }
