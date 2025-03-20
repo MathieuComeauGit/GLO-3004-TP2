@@ -17,8 +17,8 @@ public class ChocolatierService {
         this.chocolatRepository = chocolatRepository;
     }
 
-    public ChocolatierR creerChocolatier(GroupeDeChocolatier provenance) {
-        ChocolatierR chocolatier = new ChocolatierR(provenance);
+    public ChocolatierR creerChocolatier(GroupeDeChocolatier groupeDeChocolatier) {
+        ChocolatierR chocolatier = new ChocolatierR(groupeDeChocolatier);
         chocolatierRepository.save(chocolatier);
         return chocolatier;
     }

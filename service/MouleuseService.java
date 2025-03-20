@@ -1,51 +1,38 @@
 package service;
 
+import domain.ChocolatierR;
 import domain.Mouleuse;
+import domain.enums.EtapeChocolatier;
 import domain.enums.EtapeMouleuse;
 import domain.enums.GroupeDeChocolatier;
 import repository.MouleuseRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.UUID;
-
-public class MouleuseService {
-    private final MouleuseRepository mouleuseRepository;
-
-    public MouleuseService(MouleuseRepository mouleuseRepository) {
-        this.mouleuseRepository = mouleuseRepository;
+public class MouleuseService extends MachineService<EtapeMouleuse, Mouleuse, MouleuseRepository> {
+    public MouleuseService(MouleuseRepository repository) {
+        super(repository);
     }
 
-    public void creerMouleuse(int id, GroupeDeChocolatier groupeDeChocolatier) {
+    public void creerMachine(int id, GroupeDeChocolatier groupeDeChocolatier) {
         Mouleuse mouleuse = new Mouleuse(id, groupeDeChocolatier);
-        mouleuseRepository.save(mouleuse);
+        repository.save(mouleuse);
     }
 
-    public List<Mouleuse> getToutesLesMouleuses() {
-        return mouleuseRepository.findAll();
-    }
+    public void assignerMachine(Mouleuse mouleuse, ChocolatierR chocolatier) {
+        if (!estMemeGroupe(mouleuse, chocolatier.getGroupeDeChocolatier()) || chocolatier.getEtape() != EtapeChocolatier.REQUIERE_MOULEUSE) {
+            System.out.println("Ce chocolatier ne peut pas utiliser cette mouleuse.");
+            return;
+        }
 
-    public Mouleuse getMouleuseDisponible() {
-        return mouleuseRepository.findAll()
-                .stream()
-                .filter(Mouleuse::estDisponible)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public void assignerMouleuse(Mouleuse mouleuse, UUID chocolatierId) {
-        mouleuse.setChocolatierUtilisantId(chocolatierId);
+        mouleuse.setChocolatierUtilisantId(chocolatier.getId());
         mouleuse.setEtape(EtapeMouleuse.REMPLIT);
     }
 
-    public void libererMouleuse(Mouleuse mouleuse) {
-        mouleuse.liberer();
-    }
+    public void libererMachine(Mouleuse mouleuse) {
+        if (mouleuse.getEtape() != EtapeMouleuse.FERME) {
+            System.out.println("Cette mouleuse est en cours d'utilisation : " + mouleuse.getEtape().toString());
+            return;
+        }
 
-    public List<Mouleuse> getMouleusesUtilisees() {
-        return mouleuseRepository.findAll()
-                .stream()
-                .filter(m -> !m.estDisponible())
-                .collect(Collectors.toList());
+        mouleuse.liberer();
     }
 }

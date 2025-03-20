@@ -1,51 +1,38 @@
 package service;
 
+import domain.ChocolatierR;
 import domain.Tempereuse;
+import domain.enums.EtapeChocolatier;
 import domain.enums.EtapeTempereuse;
 import domain.enums.GroupeDeChocolatier;
 import repository.TempereuseRepository;
 
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-public class TempereuseService {
-    private final TempereuseRepository tempereuseRepository;
-
-    public TempereuseService(TempereuseRepository tempereuseRepository) {
-        this.tempereuseRepository = tempereuseRepository;
+public class TempereuseService extends MachineService<EtapeTempereuse, Tempereuse, TempereuseRepository> {
+    public TempereuseService(TempereuseRepository repository) {
+        super(repository);
     }
 
-    public void creerTempereuse(int id, GroupeDeChocolatier groupeDeChocolatier) {
+    public void creerMachine(int id, GroupeDeChocolatier groupeDeChocolatier) {
         Tempereuse tempereuse = new Tempereuse(id, groupeDeChocolatier);
-        tempereuseRepository.save(tempereuse);
+        repository.save(tempereuse);
     }
 
-    public List<Tempereuse> getToutesLesTempereuses() {
-        return tempereuseRepository.findAll();
-    }
+    public void assignerMachine(Tempereuse tempereuse, ChocolatierR chocolatier) {
+        if (!estMemeGroupe(tempereuse, chocolatier.getGroupeDeChocolatier()) || chocolatier.getEtape() != EtapeChocolatier.REQUIERE_TEMPEREUSE) {
+            System.out.println("Ce chocolatier ne peut pas utiliser cette tempéreuse.");
+        }
 
-    public Tempereuse getTempereuseDisponible() {
-        return tempereuseRepository.findAll()
-                .stream()
-                .filter(Tempereuse::estDisponible)
-                .findFirst()
-                .orElse(null);
-    }
-
-    public void assignerTempereuse(Tempereuse tempereuse, UUID chocolatierId) {
-        tempereuse.setChocolatierUtilisantId(chocolatierId);
+        tempereuse.setChocolatierUtilisantId(chocolatier.getId());
         tempereuse.setEtape(EtapeTempereuse.TEMPERE_CHOCOLAT);
+
     }
 
-    public void libererTempereuse(Tempereuse tempereuse) {
+    public void libererMachine(Tempereuse tempereuse) {
+        if (tempereuse.getEtape() != EtapeTempereuse.DONNE_CHOCOLAT) {
+            System.out.println("Cette mouleuse est en cours d'utilisation : " + tempereuse.getEtape().toString());
+            return;
+        }
+
         tempereuse.liberer();
-    }
-
-    public List<Tempereuse> getTempereusesUtilisees() {
-        return tempereuseRepository.findAll()
-                .stream()
-                .filter(t -> !t.estDisponible())
-                .collect(Collectors.toList());
     }
 }

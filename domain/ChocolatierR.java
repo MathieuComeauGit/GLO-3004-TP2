@@ -4,11 +4,12 @@ import java.util.UUID;
 
 public class ChocolatierR {
     private final UUID id;
-    private final GroupeDeChocolatier provenance;
+    private final GroupeDeChocolatier groupeDeChocolatier;
     private EtapeChocolatier etape;
-    public ChocolatierR(GroupeDeChocolatier provenance) {
+
+    public ChocolatierR(GroupeDeChocolatier groupeDeChocolatier) {
         this.id = UUID.randomUUID();
-        this.provenance = provenance;
+        this.groupeDeChocolatier = groupeDeChocolatier;
         this.etape = EtapeChocolatier.AUCUNE;
     }
 
@@ -16,8 +17,8 @@ public class ChocolatierR {
         return id;
     }
 
-    public GroupeDeChocolatier getProvenance() {
-        return provenance;
+    public GroupeDeChocolatier getGroupeDeChocolatier() {
+        return groupeDeChocolatier;
     }
 
     public EtapeChocolatier getEtape() {
@@ -27,5 +28,4 @@ public class ChocolatierR {
     public void setEtape(EtapeChocolatier etape) {
         this.etape = etape;
     }
-
 }
