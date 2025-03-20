@@ -56,6 +56,10 @@ public abstract class Machine<T> {
         listeAttente.remove(chocolatier);
     }
 
+    public ChocolatierR prochainChocolatier() {
+        return listeAttente.getFirst();
+    }
+
     public void viderListeAttente() {
         listeAttente.clear();
     }

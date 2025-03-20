@@ -17,22 +17,21 @@ public class TempereuseService extends MachineService<EtapeTempereuse, Tempereus
         repository.save(tempereuse);
     }
 
-    public void assignerMachine(Tempereuse tempereuse, ChocolatierR chocolatier) {
-        if (!estMemeGroupe(tempereuse, chocolatier.getGroupeDeChocolatier()) || chocolatier.getEtape() != EtapeChocolatier.REQUIERE_TEMPEREUSE) {
-            System.out.println("Ce chocolatier ne peut pas utiliser cette tempéreuse.");
+    public void requeteTempereuse(Tempereuse tempereuse, ChocolatierR chocolatier) {
+        if (!estMemeGroupe(tempereuse, chocolatier.getGroupeDeChocolatier()) || chocolatier.getEtape() != EtapeChocolatier.AUCUNE) {
+            System.out.println("Ce chocolatier ne peut pas utiliser cette tempereuse.");
+            return;
         }
+    
+        super.requeteMachine(tempereuse, chocolatier);
+        chocolatier.setEtape(EtapeChocolatier.REQUIERE_TEMPEREUSE);
+    }
 
-        tempereuse.setChocolatierUtilisantId(chocolatier.getId());
-        tempereuse.setEtape(EtapeTempereuse.TEMPERE_CHOCOLAT);
-
+    public void assignerTempereuse(Tempereuse tempereuse) {
+        super.assignerMachine(tempereuse, EtapeChocolatier.REQUIERE_TEMPEREUSE, EtapeTempereuse.TEMPERE_CHOCOLAT);
     }
 
     public void libererMachine(Tempereuse tempereuse) {
-        if (tempereuse.getEtape() != EtapeTempereuse.DONNE_CHOCOLAT) {
-            System.out.println("Cette mouleuse est en cours d'utilisation : " + tempereuse.getEtape().toString());
-            return;
-        }
-
-        tempereuse.liberer();
+        super.libererMachine(tempereuse, EtapeTempereuse.DONNE_CHOCOLAT);
     }
 }

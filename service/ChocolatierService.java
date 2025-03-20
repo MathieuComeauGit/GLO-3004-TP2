@@ -35,6 +35,8 @@ public class ChocolatierService {
         chocolatierRepository.deleteById(id);
     }
 
+    // TODO c'est avant de faire la requete qu'on a la rupture, pas pour faire garniture
+    // qui est au milieu du processus.
     public void faireGarniture(UUID chocolatierId) {
         ChocolatierR chocolatier = chocolatierRepository.findById(chocolatierId);
         if (chocolatier != null) {

@@ -17,22 +17,21 @@ public class MouleuseService extends MachineService<EtapeMouleuse, Mouleuse, Mou
         repository.save(mouleuse);
     }
 
-    public void assignerMachine(Mouleuse mouleuse, ChocolatierR chocolatier) {
-        if (!estMemeGroupe(mouleuse, chocolatier.getGroupeDeChocolatier()) || chocolatier.getEtape() != EtapeChocolatier.REQUIERE_MOULEUSE) {
+    public void requeteMouleuse(Mouleuse mouleuse, ChocolatierR chocolatier) {
+        if (!estMemeGroupe(mouleuse, chocolatier.getGroupeDeChocolatier()) || chocolatier.getEtape() != EtapeChocolatier.DONNE_CHOCOLAT) {
             System.out.println("Ce chocolatier ne peut pas utiliser cette mouleuse.");
             return;
         }
 
-        mouleuse.setChocolatierUtilisantId(chocolatier.getId());
-        mouleuse.setEtape(EtapeMouleuse.REMPLIT);
+        chocolatier.setEtape(EtapeChocolatier.REQUIERE_MOULEUSE);
+        super.requeteMachine(mouleuse, chocolatier);
     }
 
-    public void libererMachine(Mouleuse mouleuse) {
-        if (mouleuse.getEtape() != EtapeMouleuse.FERME) {
-            System.out.println("Cette mouleuse est en cours d'utilisation : " + mouleuse.getEtape().toString());
-            return;
-        }
+    public void assignerMouleuse(Mouleuse mouleuse) {
+        super.assignerMachine(mouleuse, EtapeChocolatier.REQUIERE_MOULEUSE, EtapeMouleuse.REMPLIT);
+    }
 
-        mouleuse.liberer();
+    public void libererMouleuse(Mouleuse mouleuse) {
+        super.libererMachine(mouleuse, EtapeMouleuse.FERME);
     }
 }
