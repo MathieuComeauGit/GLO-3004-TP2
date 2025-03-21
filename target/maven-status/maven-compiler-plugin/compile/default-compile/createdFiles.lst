@@ -19,7 +19,7 @@ domain\enums\GroupeDeChocolatier.class
 domain\enums\EtapeTempereuse.class
 domain\Tempereuse.class
 ressource\SetupResource.class
+domain\AbstractMachine.class
 ressource\TempereuseResource.class
 repository\MouleuseRepository.class
-domain\Machine.class
 domain\Mouleuse.class

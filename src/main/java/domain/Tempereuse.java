@@ -4,7 +4,7 @@ import java.util.UUID;
 import domain.enums.EtapeTempereuse;
 import domain.enums.GroupeDeChocolatier;
 
-public class Tempereuse extends Machine<EtapeTempereuse>{
+public class Tempereuse extends AbstractMachine<EtapeTempereuse>{
 
     public Tempereuse(UUID id, GroupeDeChocolatier groupeDeChocolatier) {
         super(id, groupeDeChocolatier, EtapeTempereuse.AUCUNE);

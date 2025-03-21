@@ -6,14 +6,14 @@ import java.util.UUID;
 
 import domain.enums.GroupeDeChocolatier;
 
-public abstract class Machine<T> {
+public abstract class AbstractMachine<T> {
     protected UUID id;
     protected UUID chocolatierUtilisantId;
     protected GroupeDeChocolatier groupeDeChocolatier;
     protected LinkedList<ChocolatierR> listeAttente = new LinkedList<>();
     protected T etape;
 
-    public Machine(UUID id, GroupeDeChocolatier groupeDeChocolatier, T etapeInitiale) {
+    public AbstractMachine(UUID id, GroupeDeChocolatier groupeDeChocolatier, T etapeInitiale) {
         this.id = id;
         this.groupeDeChocolatier = groupeDeChocolatier;
         this.etape = etapeInitiale;
