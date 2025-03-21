@@ -1,0 +1,138 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #fef9f4;
+    color: #333;
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px;
+}
+
+.title {
+    text-align: center;
+    font-size: 36px;
+    margin-bottom: 40px;
+    color: #5d3a00;
+}
+
+.group-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 30px;
+    flex-wrap: wrap;
+}
+
+.group-block {
+    flex: 1;
+    min-width: 550px;
+    background-color: #fff9f0;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(100, 50, 0, 0.1);
+}
+
+.init-form {
+    margin-bottom: 25px;
+    background-color: #fff2dc;
+    padding: 15px;
+    border-radius: 8px;
+    border: 1px solid #ffd699;
+}
+
+.init-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 15px;
+}
+
+input[type="number"] {
+    padding: 4px 8px;
+    margin-left: 10px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    width: 60px;
+}
+
+.section {
+    background-color: #fff;
+    border: 1px solid #e6d5b8;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.section h3 {
+    margin-top: 0;
+    color: #8b4513;
+    font-size: 18px;
+}
+
+.status-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.status-card {
+    background-color: #fffefa;
+    border: 1px solid #ddd;
+    border-left: 6px solid #c87f36;
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.status-card:hover {
+    background-color: #fff4e0;
+}
+
+.status-card span {
+    font-weight: bold;
+}
+
+.status-card label {
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+}
+
+.btn {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-init {
+    background-color: #c87f36;
+    color: white;
+}
+
+.btn-init:hover {
+    background-color: #a76429;
+}
+
+.btn-reset {
+    background-color: #b83b5e;
+    color: white;
+    display: block;
+    margin: 30px auto 0;
+}
+
+.btn-reset:hover {
+    background-color: #992e4c;
+}

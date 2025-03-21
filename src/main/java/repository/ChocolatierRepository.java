@@ -1,10 +1,10 @@
 package repository;
 
-import domain.ChocolatierR;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import domain.ChocolatierR;
 
 public class ChocolatierRepository {
     private final List<ChocolatierR> chocolatierList = new ArrayList<>();

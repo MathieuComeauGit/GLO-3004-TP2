@@ -1,28 +1,32 @@
 package domain;
 
+import java.util.UUID;
+
 import domain.enums.EtapeMouleuse;
 import domain.enums.GroupeDeChocolatier;
 
-import java.util.UUID;
-
 public class Mouleuse {
-    private int id;
+    private UUID id;
     private UUID chocolatierUtilisantId;
     private EtapeMouleuse etape;
     private GroupeDeChocolatier groupeDeChocolatier;
 
-    public Mouleuse(int id, GroupeDeChocolatier groupeDeChocolatier) {
+    public Mouleuse(UUID id, GroupeDeChocolatier groupeDeChocolatier) {
         this.id = id;
         this.etape = EtapeMouleuse.AUCUNE;
         this.groupeDeChocolatier = groupeDeChocolatier;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
     public GroupeDeChocolatier getGroupeDeChocolatier() {
         return groupeDeChocolatier;
+    }
+
+    public void setGroupeDeChocolatier(GroupeDeChocolatier groupeDeChocolatier) {
+        this.groupeDeChocolatier = groupeDeChocolatier;
     }
 
     public UUID getChocolatierUtilisantId() {

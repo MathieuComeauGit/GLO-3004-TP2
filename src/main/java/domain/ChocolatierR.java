@@ -1,6 +1,7 @@
 package domain;
-import domain.enums.*;
 import java.util.UUID;
+
+import domain.enums.*;
 
 public class ChocolatierR {
     private final UUID id;

@@ -1,23 +1,23 @@
 package domain;
 
+import java.util.UUID;
+
 import domain.enums.EtapeTempereuse;
 import domain.enums.GroupeDeChocolatier;
 
-import java.util.UUID;
-
 public class Tempereuse {
-    private int id;
+    private UUID id;
     private UUID chocolatierUtilisantId;
     private EtapeTempereuse etape;
     private GroupeDeChocolatier groupeDeChocolatier;
 
-    public Tempereuse(int id, GroupeDeChocolatier groupeDeChocolatier) {
+    public Tempereuse(UUID id, GroupeDeChocolatier groupeDeChocolatier) {
         this.id = id;
         this.etape = EtapeTempereuse.AUCUNE;
         this.groupeDeChocolatier = groupeDeChocolatier;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
