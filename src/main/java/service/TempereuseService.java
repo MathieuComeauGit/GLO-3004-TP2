@@ -41,7 +41,7 @@ public class TempereuseService {
     }
 
     public void libererTempereuse(Tempereuse tempereuse) {
-        tempereuse.liberer();
+        tempereuse.rendreDisponible();
     }
 
     public List<Tempereuse> getTempereusesUtilisees() {

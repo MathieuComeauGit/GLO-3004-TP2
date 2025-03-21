@@ -39,7 +39,7 @@ public class ChocolatierService {
                 break;
     
             case REQUIS_TEMPEREUSE:
-                Tempereuse temp = tempereuseService.getTempereuseDisponible(chocolatier.getProvenance());
+                Tempereuse temp = tempereuseService.getTempereuseDisponible(chocolatier.getGroupeDeChocolatier());
                 if (temp == null) return false;
                 tempereuseService.assignerTempereuse(temp, chocolatierId);
                 next = EtapeChocolatier.TEMPERE_CHOCOLAT;
@@ -54,7 +54,7 @@ public class ChocolatierService {
                 break;
     
             case REQUIS_MOULEUSE:
-                Mouleuse mDispo = mouleuseService.getMouleuseDisponible(chocolatier.getProvenance());
+                Mouleuse mDispo = mouleuseService.getMouleuseDisponible(chocolatier.getGroupeDeChocolatier());
                 if (mDispo == null) return false;
                 mouleuseService.assignerMouleuse(mDispo, chocolatierId);
                 next = EtapeChocolatier.REMPLIT_MOULE;
@@ -91,7 +91,7 @@ public class ChocolatierService {
                 return EtapeChocolatier.REQUIS_TEMPEREUSE;
     
             case REQUIS_TEMPEREUSE:
-                if (tempereuseService.getTempereuseDisponible(chocolatier.getProvenance()) != null)
+                if (tempereuseService.getTempereuseDisponible(chocolatier.getGroupeDeChocolatier()) != null)
                     return EtapeChocolatier.TEMPERE_CHOCOLAT;
                 return EtapeChocolatier.BLOCKED;
     
@@ -102,7 +102,7 @@ public class ChocolatierService {
                 return EtapeChocolatier.REQUIS_MOULEUSE;
     
             case REQUIS_MOULEUSE:
-                if (mouleuseService.getMouleuseDisponible(chocolatier.getProvenance()) != null)
+                if (mouleuseService.getMouleuseDisponible(chocolatier.getGroupeDeChocolatier()) != null)
                     return EtapeChocolatier.REMPLIT_MOULE;
                 return EtapeChocolatier.BLOCKED;
     
@@ -128,7 +128,7 @@ public class ChocolatierService {
             JsonObject obj = new JsonObject();
             obj.addProperty("id", c.getId().toString());
             obj.addProperty("etape", c.getEtape().name().toUpperCase());
-            obj.addProperty("groupe", c.getProvenance().name().toLowerCase());
+            obj.addProperty("groupe", c.getGroupeDeChocolatier().name().toLowerCase());
             EtapeChocolatier next = getEtapeSuivantePossible(c);
             obj.addProperty("nextStep", next != null ? next.name() : "AUCUNE");
             chocoArr.add(obj);
@@ -166,7 +166,7 @@ public class ChocolatierService {
 
     public void initialiserChocolatiersGroupe(int nombre, GroupeDeChocolatier groupe) {
         // Supprime tous les chocolatiers du groupe passé en paramètre
-        chocolatierRepository.findAll().removeIf(c -> c.getProvenance() == groupe);
+        chocolatierRepository.findAll().removeIf(c -> c.getGroupeDeChocolatier() == groupe);
     
         // Crée les nouveaux chocolatiers
         for (int i = 0; i < nombre; i++) {

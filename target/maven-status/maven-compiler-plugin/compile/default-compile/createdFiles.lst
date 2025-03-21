@@ -21,4 +21,5 @@ domain\Tempereuse.class
 ressource\SetupResource.class
 ressource\TempereuseResource.class
 repository\MouleuseRepository.class
+domain\Machine.class
 domain\Mouleuse.class

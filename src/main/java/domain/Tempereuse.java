@@ -1,52 +1,18 @@
 package domain;
 
 import java.util.UUID;
-
 import domain.enums.EtapeTempereuse;
 import domain.enums.GroupeDeChocolatier;
 
-public class Tempereuse {
-    private UUID id;
-    private UUID chocolatierUtilisantId;
-    private EtapeTempereuse etape;
-    private GroupeDeChocolatier groupeDeChocolatier;
+public class Tempereuse extends Machine<EtapeTempereuse>{
 
     public Tempereuse(UUID id, GroupeDeChocolatier groupeDeChocolatier) {
-        this.id = id;
-        this.etape = EtapeTempereuse.AUCUNE;
-        this.groupeDeChocolatier = groupeDeChocolatier;
+        super(id, groupeDeChocolatier, EtapeTempereuse.AUCUNE);
     }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public GroupeDeChocolatier getGroupeDeChocolatier() {
-        return groupeDeChocolatier;
-    }
-
-    public UUID getChocolatierUtilisantId() {
-        return chocolatierUtilisantId;
-    }
-
-    public void setChocolatierUtilisantId(UUID chocolatierUtilisantId) {
-        this.chocolatierUtilisantId = chocolatierUtilisantId;
-    }
-
-    public EtapeTempereuse getEtape() {
-        return etape;
-    }
-
-    public void setEtape(EtapeTempereuse etape) {
-        this.etape = etape;
-    }
-
-    public boolean estDisponible() {
-        return chocolatierUtilisantId == null;
-    }
-
-    public void liberer() {
-        chocolatierUtilisantId = null;
+    @Override
+    public void rendreDisponible() {
+        super.rendreDisponible();
         etape = EtapeTempereuse.AUCUNE;
     }
 }

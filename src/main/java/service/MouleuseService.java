@@ -41,7 +41,7 @@ public class MouleuseService {
     }
 
     public void libererMouleuse(Mouleuse mouleuse) {
-        mouleuse.liberer();
+        mouleuse.rendreDisponible();
     }
 
     public List<Mouleuse> getMouleusesUtilisees() {
