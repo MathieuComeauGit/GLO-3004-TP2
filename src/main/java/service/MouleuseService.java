@@ -83,7 +83,7 @@ public class MouleuseService {
             case GARNIT:
                 next = EtapeMouleuse.AUCUNE;
                 mouleuse.setEtape(next);
-                chocolatierAssocie.setEtape(EtapeChocolatier.FERME_MOULE);
+                chocolatierAssocie.setEtape(EtapeChocolatier.AUCUNE);
                 mouleuse.setChocolatierUtilisantId(null);
                 break;
 

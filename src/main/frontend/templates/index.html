@@ -3,61 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <title>Dashboard Chocolat</title>
-    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container">
-        <h1 class="title">🍫 Dashboard de Production - Chocolaterie</h1>
+    <h1>Dashboard Chocolat</h1>
 
-        <div class="group-container">
-            <div class="group-block">
-                <h2>🔧 Initialisation Groupe N</h2>
-                <div class="init-form">
-                    <label>Chocolatiers N: <input id="nbChocoN" type="number" value="2"></label>
-                    <label>Tempereuses N: <input id="nbTempN" type="number" value="2"></label>
-                    <label>Mouleuses N: <input id="nbMouleN" type="number" value="2"></label>
-                    <button id="initBtnN" class="btn btn-init">Init Groupe N</button>
-                </div>
-
-                <div class="section">
-                    <h3>🍫 Chocolatiers Groupe N</h3>
-                    <div id="groupe-n-chocolatiers" class="status-grid"></div>
-                </div>
-                <div class="section">
-                    <h3>🔥 Tempereuses Groupe N</h3>
-                    <div id="groupe-n-tempereuses" class="status-grid"></div>
-                </div>
-                <div class="section">
-                    <h3>🧪 Mouleuses Groupe N</h3>
-                    <div id="groupe-n-mouleuses" class="status-grid"></div>
-                </div>
+    <div class="dashboard-container">
+        <div class="group-column">
+            <h2>Initialisation Groupe N</h2>
+            <div class="init-block">
+                <label>Chocolatiers N: <input id="nbChocoN" type="number" value="2"></label>
+                <label>Tempereuses N: <input id="nbTempN" type="number" value="2"></label>
+                <label>Mouleuses N: <input id="nbMouleN" type="number" value="2"></label>
+                <button id="initBtnN">Init Groupe N</button>
             </div>
 
-            <div class="group-block">
-                <h2>🔧 Initialisation Groupe B</h2>
-                <div class="init-form">
-                    <label>Chocolatiers B: <input id="nbChocoB" type="number" value="2"></label>
-                    <label>Tempereuses B: <input id="nbTempB" type="number" value="2"></label>
-                    <label>Mouleuses B: <input id="nbMouleB" type="number" value="2"></label>
-                    <button id="initBtnB" class="btn btn-init">Init Groupe B</button>
-                </div>
-
-                <div class="section">
-                    <h3>🍫 Chocolatiers Groupe B</h3>
-                    <div id="groupe-b-chocolatiers" class="status-grid"></div>
-                </div>
-                <div class="section">
-                    <h3>🔥 Tempereuses Groupe B</h3>
-                    <div id="groupe-b-tempereuses" class="status-grid"></div>
-                </div>
-                <div class="section">
-                    <h3>🧪 Mouleuses Groupe B</h3>
-                    <div id="groupe-b-mouleuses" class="status-grid"></div>
-                </div>
+            <div class="section">
+                <h3>Chocolatiers Groupe N</h3>
+                <div id="groupe-n-chocolatiers"></div>
+            </div>
+            <div class="section">
+                <h3>Tempereuses Groupe N</h3>
+                <div id="groupe-n-tempereuses"></div>
+            </div>
+            <div class="section">
+                <h3>Mouleuses Groupe N</h3>
+                <div id="groupe-n-mouleuses"></div>
             </div>
         </div>
 
-        <button id="resetBtn" class="btn btn-reset">🔄 Reset Global</button>
+        <div class="group-column">
+            <h2>Initialisation Groupe B</h2>
+            <div class="init-block">
+                <label>Chocolatiers B: <input id="nbChocoB" type="number" value="2"></label>
+                <label>Tempereuses B: <input id="nbTempB" type="number" value="2"></label>
+                <label>Mouleuses B: <input id="nbMouleB" type="number" value="2"></label>
+                <button id="initBtnB">Init Groupe B</button>
+            </div>
+
+            <div class="section">
+                <h3>Chocolatiers Groupe B</h3>
+                <div id="groupe-b-chocolatiers"></div>
+            </div>
+            <div class="section">
+                <h3>Tempereuses Groupe B</h3>
+                <div id="groupe-b-tempereuses"></div>
+            </div>
+            <div class="section">
+                <h3>Mouleuses Groupe B</h3>
+                <div id="groupe-b-mouleuses"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="reset-container">
+        <button id="resetBtn">Reset Global</button>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
