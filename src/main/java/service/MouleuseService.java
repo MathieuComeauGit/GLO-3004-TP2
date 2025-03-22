@@ -77,7 +77,7 @@ public class MouleuseService {
             case REMPLIT:
                 next = EtapeMouleuse.GARNIT;
                 mouleuse.setEtape(next);
-                chocolatierAssocie.setEtape(EtapeChocolatier.GARNIT_MOULE);
+                chocolatierAssocie.setEtape(EtapeChocolatier.GARNIT);
                 break;
 
             case GARNIT:

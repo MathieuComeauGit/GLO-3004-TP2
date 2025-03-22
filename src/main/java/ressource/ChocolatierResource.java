@@ -15,13 +15,9 @@ public class ChocolatierResource {
 
     public ChocolatierResource(ChocolatierService chocolatierService) {
         this.chocolatierService = chocolatierService;
-
-        // === ROUTES CHOCOLATIER ===
-        // POST /api/change_etape → change l'étape d’un chocolatier
         post("/api/change_etape", this::changerEtape);
     }
 
-    // Méthode liée à POST /api/change_etape
     private Object changerEtape(Request req, Response res) {
         var json = JsonParser.parseString(req.body()).getAsJsonObject();
         UUID id = UUID.fromString(json.get("id").getAsString());

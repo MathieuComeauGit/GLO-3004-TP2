@@ -4,6 +4,5 @@ public enum EtapeTempereuse {
     BLOCKED,
     AUCUNE,
     TEMPERE_CHOCOLAT,
-    DONNE_CHOCOLAT,
-    TERMINE
+    DONNE_CHOCOLAT
 }

@@ -2,6 +2,8 @@ package ressource;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import exceptions.BadCaseException;
 import service.TempereuseService;
 import spark.Request;
 import spark.Response;
@@ -20,7 +22,7 @@ public class TempereuseResource {
         post("/api/change_etape_tempereuse", this::changerEtapeTempereuse);
     }
 
-    private Object changerEtapeTempereuse(Request req, Response res) {
+    private Object changerEtapeTempereuse(Request req, Response res) throws BadCaseException {
         JsonObject json = JsonParser.parseString(req.body()).getAsJsonObject();
         UUID id = UUID.fromString(json.get("id").getAsString());
         boolean success = tempereuseService.avancerEtapeParTempereuseId(id);

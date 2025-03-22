@@ -7,6 +7,7 @@ import domain.enums.EtapeTempereuse;
 import domain.enums.GroupeDeChocolatier;
 import repository.ChocolatierRepository;
 import repository.TempereuseRepository;
+import exceptions.BadCaseException;
 
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +60,7 @@ public class TempereuseService {
                 .orElse(null);
     }
 
-    public boolean avancerEtapeParTempereuseId(UUID tempereuseId) {
+    public boolean avancerEtapeParTempereuseId(UUID tempereuseId) throws BadCaseException {
         Tempereuse tempereuse = getTempereuseById(tempereuseId);
         if (tempereuse == null || tempereuse.getChocolatierUtilisantId() == null)
             return false;
@@ -67,26 +68,24 @@ public class TempereuseService {
         EtapeTempereuse current = tempereuse.getEtape();
         EtapeTempereuse next;
         switch (current) {
+            case BLOCKED:
+                return false;
             case AUCUNE:
                 next = EtapeTempereuse.TEMPERE_CHOCOLAT;
                 tempereuse.setEtape(next);
                 break;
             case TEMPERE_CHOCOLAT:
-                next = EtapeTempereuse.DONNE_CHOCOLAT;
-                tempereuse.setEtape(next);
-                break;
-            case DONNE_CHOCOLAT:
                 tempereuse.setEtape(EtapeTempereuse.AUCUNE);
                 UUID chocolatierAssocieId = tempereuse.getChocolatierUtilisantId();
                 ChocolatierR chocolatierAssocie = chocolatierRepository.findById(chocolatierAssocieId);
                 chocolatierAssocie.setEtape(EtapeChocolatier.DONNE_CHOCOLAT);
                 tempereuse.setChocolatierUtilisantId(null);
                 break;
-
+            case DONNE_CHOCOLAT:
+                break;
             default:
-                return false;
+                throw new BadCaseException("case is not handled");
         }
-    
         return true;
     }
     

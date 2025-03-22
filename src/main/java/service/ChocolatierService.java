@@ -35,10 +35,10 @@ public class ChocolatierService {
     
         switch (current) {
             case AUCUNE:
-                next = EtapeChocolatier.REQUIS_TEMPEREUSE;
+                next = EtapeChocolatier.REQUIERE_TEMPEREUSE;
                 break;
     
-            case REQUIS_TEMPEREUSE:
+            case REQUIERE_TEMPEREUSE:
                 Tempereuse temp = tempereuseService.getTempereuseDisponible(chocolatier.getGroupeDeChocolatier());
                 if (temp == null) return false;
                 tempereuseService.assignerTempereuse(temp, chocolatierId);
@@ -50,25 +50,25 @@ public class ChocolatierService {
                 break;
     
             case DONNE_CHOCOLAT:
-                next = EtapeChocolatier.REQUIS_MOULEUSE;
+                next = EtapeChocolatier.REQUIERE_MOULEUSE;
                 break;
     
-            case REQUIS_MOULEUSE:
+            case REQUIERE_MOULEUSE:
                 Mouleuse mDispo = mouleuseService.getMouleuseDisponible(chocolatier.getGroupeDeChocolatier());
                 if (mDispo == null) return false;
                 mouleuseService.assignerMouleuse(mDispo, chocolatierId);
-                next = EtapeChocolatier.REMPLIT_MOULE;
+                next = EtapeChocolatier.REMPLIT;
                 break;
     
-            case REMPLIT_MOULE:
-                next = EtapeChocolatier.GARNIT_MOULE;
+            case REMPLIT:
+                next = EtapeChocolatier.GARNIT;
                 break;
     
-            case GARNIT_MOULE:
-                next = EtapeChocolatier.FERME_MOULE;
+            case GARNIT:
+                next = EtapeChocolatier.FERME;
                 break;
     
-            case FERME_MOULE:
+            case FERME:
                 Mouleuse associee = mouleuseService.getMouleuseAssociee(chocolatierId);
                 if (associee != null) mouleuseService.libererMouleuse(associee);
                 next = EtapeChocolatier.AUCUNE;
@@ -88,9 +88,9 @@ public class ChocolatierService {
     
         switch (current) {
             case AUCUNE:
-                return EtapeChocolatier.REQUIS_TEMPEREUSE;
+                return EtapeChocolatier.REQUIERE_TEMPEREUSE;
     
-            case REQUIS_TEMPEREUSE:
+            case REQUIERE_TEMPEREUSE:
                 if (tempereuseService.getTempereuseDisponible(chocolatier.getGroupeDeChocolatier()) != null)
                     return EtapeChocolatier.TEMPERE_CHOCOLAT;
                 return EtapeChocolatier.BLOCKED;
@@ -99,20 +99,20 @@ public class ChocolatierService {
                 return EtapeChocolatier.BLOCKED;
     
             case DONNE_CHOCOLAT:
-                return EtapeChocolatier.REQUIS_MOULEUSE;
+                return EtapeChocolatier.REQUIERE_MOULEUSE;
     
-            case REQUIS_MOULEUSE:
+            case REQUIERE_MOULEUSE:
                 if (mouleuseService.getMouleuseDisponible(chocolatier.getGroupeDeChocolatier()) != null)
-                    return EtapeChocolatier.REMPLIT_MOULE;
+                    return EtapeChocolatier.REMPLIT;
                 return EtapeChocolatier.BLOCKED;
     
-            case REMPLIT_MOULE:
+            case REMPLIT:
                 return EtapeChocolatier.BLOCKED;
     
-            case GARNIT_MOULE:
+            case GARNIT:
                 return EtapeChocolatier.BLOCKED;
     
-            case FERME_MOULE:
+            case FERME:
                 return EtapeChocolatier.AUCUNE;
     
             default:

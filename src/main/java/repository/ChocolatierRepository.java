@@ -1,36 +1,15 @@
 package repository;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
-
 import domain.ChocolatierR;
 
-public class ChocolatierRepository {
-    private final List<ChocolatierR> chocolatierList = new ArrayList<>();
-
-    public void save(ChocolatierR chocolatier) {
-        chocolatierList.add(chocolatier);
-    }
+public class ChocolatierRepository extends BaseRepository<ChocolatierR>{
 
     public ChocolatierR findById(UUID id) {
-        for (ChocolatierR c : chocolatierList) {
-            if (c.getId().equals(id)) {
+        for (ChocolatierR c : itemsList) {
+            if (c.getId().equals(id)) 
                 return c;
-            }
         }
         return null; 
-    }
-
-    public List<ChocolatierR> findAll() {
-        return chocolatierList;
-    }
-
-    public void deleteById(UUID id) {
-        chocolatierList.removeIf(c -> c.getId().equals(id));
-    }
-
-    public void clear() {
-        chocolatierList.clear();
     }
 }
