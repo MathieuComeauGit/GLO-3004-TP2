@@ -38,8 +38,8 @@ public class InitResource {
         GroupeDeChocolatier groupe = GroupeDeChocolatier.valueOf(groupeStr.toLowerCase());
 
         chocolatierService.initialiserChocolatiersGroupe(nbChoco, groupe);
-        tempereuseService.initialiserTempereusesGroupe(nbTemp, groupe);
-        mouleuseService.initialiserMouleusesGroupe(nbMoule, groupe);
+        tempereuseService.initialiserMachineGroupe(nbTemp, groupe);
+        mouleuseService.initialiserMachineGroupe(nbMoule, groupe);
 
         res.status(200);
         return "{\"message\": \"Initialisation du groupe " + groupeStr + " terminée\"}";

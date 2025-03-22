@@ -5,62 +5,23 @@ import domain.Mouleuse;
 import domain.enums.EtapeChocolatier;
 import domain.enums.EtapeMouleuse;
 import domain.enums.GroupeDeChocolatier;
+import exceptions.BadCaseException;
 import repository.ChocolatierRepository;
 import repository.MouleuseRepository;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class MouleuseService {
-    private final MouleuseRepository mouleuseRepository;
-    private final ChocolatierRepository chocolatierRepository;
-
+public class MouleuseService extends AbstractMachineService<EtapeMouleuse, Mouleuse, MouleuseRepository> {
     public MouleuseService(MouleuseRepository mouleuseRepository, ChocolatierRepository chocolatierRepository) {
-        this.mouleuseRepository = mouleuseRepository;
-        this.chocolatierRepository = chocolatierRepository;
+        super(mouleuseRepository, chocolatierRepository);
     }
-
-    public List<Mouleuse> getToutesLesMouleuses() {
-        return mouleuseRepository.findAll();
-    }
-
-    public Mouleuse getMouleuseDisponible(GroupeDeChocolatier groupeDeChocolatier) {
-        return mouleuseRepository.findAll()
-                .stream()
-                .filter(Mouleuse::estDisponible)
-                .filter(m -> m.getGroupeDeChocolatier() == groupeDeChocolatier)
-                .findFirst()
-                .orElse(null);
-    }
-    
 
     public void assignerMouleuse(Mouleuse mouleuse, UUID chocolatierId) {
-        mouleuse.setChocolatierUtilisantId(chocolatierId);
-        mouleuse.setEtape(EtapeMouleuse.REMPLIT);
+        super.assignerMachine(mouleuse, EtapeMouleuse.REMPLIT);
     }
 
-    public void libererMouleuse(Mouleuse mouleuse) {
-        mouleuse.rendreDisponible();
-    }
-
-    public List<Mouleuse> getMouleusesUtilisees() {
-        return mouleuseRepository.findAll()
-                .stream()
-                .filter(m -> !m.estDisponible())
-                .collect(Collectors.toList());
-    }
-
-    public Mouleuse getMouleuseAssociee(UUID chocolatierId) {
-        return mouleuseRepository.findAll()
-                .stream()
-                .filter(m -> chocolatierId.equals(m.getChocolatierUtilisantId()))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public boolean avancerEtapeParMouleuseId(UUID mouleuseId) {
-        Mouleuse mouleuse = getMouleuseById(mouleuseId);
+    public boolean avancerEtapeParMachineId(UUID mouleuseId) throws BadCaseException {
+        Mouleuse mouleuse = getMachineById(mouleuseId);
         if (mouleuse == null || mouleuse.getChocolatierUtilisantId() == null)
             return false;
 
@@ -69,55 +30,45 @@ public class MouleuseService {
         UUID chocolatierAssocieId = mouleuse.getChocolatierUtilisantId();
         ChocolatierR chocolatierAssocie = chocolatierRepository.findById(chocolatierAssocieId);
         switch (current) {
+            case BLOCKED: 
+                return false;
             case AUCUNE:
                 next = EtapeMouleuse.REMPLIT;
                 mouleuse.setEtape(next);
                 break;
-
             case REMPLIT:
                 next = EtapeMouleuse.GARNIT;
                 mouleuse.setEtape(next);
                 chocolatierAssocie.setEtape(EtapeChocolatier.GARNIT);
                 break;
-
             case GARNIT:
                 next = EtapeMouleuse.AUCUNE;
                 mouleuse.setEtape(next);
                 chocolatierAssocie.setEtape(EtapeChocolatier.AUCUNE);
                 mouleuse.setChocolatierUtilisantId(null);
                 break;
-
             default:
-                return false;
+                throw new BadCaseException("case is not handled");
         }
 
         return true;
     }
 
-    public Mouleuse getMouleuseById(UUID id) {
-        return mouleuseRepository.findById(id);
-    }
-
-    public void initialiserMouleusesGroupe(int nombre, GroupeDeChocolatier groupe) {
+    public void initialiserMachineGroupe(int nombre, GroupeDeChocolatier groupe) {
         // Supprimer les mouleuses du groupe spécifié
-        mouleuseRepository.findAll().removeIf(m -> m.getGroupeDeChocolatier() == groupe);
+        machineRepository.findAll().removeIf(m -> m.getGroupeDeChocolatier() == groupe);
     
         // Recréer les nouvelles mouleuses pour le groupe
         for (int i = 0; i < nombre; i++) {
             UUID id = UUID.randomUUID();
-            mouleuseRepository.save(new Mouleuse(id, groupe));
+            machineRepository.save(new Mouleuse(id, groupe));
         }
     }
-    
 
     public EtapeMouleuse getEtapeSuivantePossible(Mouleuse mouleuse) {
         EtapeMouleuse[] etapes = EtapeMouleuse.values();
         int currentIndex = mouleuse.getEtape().ordinal();
         if (currentIndex + 1 >= etapes.length) return null;
         return etapes[currentIndex + 1];
-    }
-
-    public void reset() {
-        mouleuseRepository.clear();
     }
 }

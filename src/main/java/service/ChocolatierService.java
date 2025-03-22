@@ -2,12 +2,11 @@ package service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
 import domain.ChocolatierR;
 import domain.Tempereuse;
 import domain.Mouleuse;
 import domain.enums.EtapeChocolatier;
-import domain.enums.EtapeMouleuse;
-import domain.enums.EtapeTempereuse;
 import domain.enums.GroupeDeChocolatier;
 import repository.ChocolatierRepository;
 
@@ -35,13 +34,14 @@ public class ChocolatierService {
     
         switch (current) {
             case AUCUNE:
+                // TODO faire machine.requeteMachine -> nécessite un chocolatier et la machine spécifique (même si pas dispo)
                 next = EtapeChocolatier.REQUIERE_TEMPEREUSE;
                 break;
     
             case REQUIERE_TEMPEREUSE:
-                Tempereuse temp = tempereuseService.getTempereuseDisponible(chocolatier.getGroupeDeChocolatier());
+                Tempereuse temp = tempereuseService.getMachineDisponible(chocolatier.getGroupeDeChocolatier());
                 if (temp == null) return false;
-                tempereuseService.assignerTempereuse(temp, chocolatierId);
+                tempereuseService.assignerTempereuse(temp); //TODO bug ici présentement car chocolatier pas dans la liste d'attente
                 next = EtapeChocolatier.TEMPERE_CHOCOLAT;
                 break;
     
@@ -54,7 +54,7 @@ public class ChocolatierService {
                 break;
     
             case REQUIERE_MOULEUSE:
-                Mouleuse mDispo = mouleuseService.getMouleuseDisponible(chocolatier.getGroupeDeChocolatier());
+                Mouleuse mDispo = mouleuseService.getMachineDisponible(chocolatier.getGroupeDeChocolatier());
                 if (mDispo == null) return false;
                 mouleuseService.assignerMouleuse(mDispo, chocolatierId);
                 next = EtapeChocolatier.REMPLIT;
@@ -69,8 +69,8 @@ public class ChocolatierService {
                 break;
     
             case FERME:
-                Mouleuse associee = mouleuseService.getMouleuseAssociee(chocolatierId);
-                if (associee != null) mouleuseService.libererMouleuse(associee);
+                Mouleuse associee = mouleuseService.getMachineAssociee(chocolatierId);
+                if (associee != null) mouleuseService.libererMachine(associee);
                 next = EtapeChocolatier.AUCUNE;
                 break;
     
@@ -91,7 +91,7 @@ public class ChocolatierService {
                 return EtapeChocolatier.REQUIERE_TEMPEREUSE;
     
             case REQUIERE_TEMPEREUSE:
-                if (tempereuseService.getTempereuseDisponible(chocolatier.getGroupeDeChocolatier()) != null)
+                if (tempereuseService.getMachineDisponible(chocolatier.getGroupeDeChocolatier()) != null)
                     return EtapeChocolatier.TEMPERE_CHOCOLAT;
                 return EtapeChocolatier.BLOCKED;
     
@@ -102,7 +102,7 @@ public class ChocolatierService {
                 return EtapeChocolatier.REQUIERE_MOULEUSE;
     
             case REQUIERE_MOULEUSE:
-                if (mouleuseService.getMouleuseDisponible(chocolatier.getGroupeDeChocolatier()) != null)
+                if (mouleuseService.getMachineDisponible(chocolatier.getGroupeDeChocolatier()) != null)
                     return EtapeChocolatier.REMPLIT;
                 return EtapeChocolatier.BLOCKED;
     
@@ -134,33 +134,12 @@ public class ChocolatierService {
             chocoArr.add(obj);
         }
 
-        JsonArray tempArr = new JsonArray();
-        for (Tempereuse t : tempService.getToutesLesTempereuses()) {
-            JsonObject obj = new JsonObject();
-            obj.addProperty("id", t.getId().toString());
-            obj.addProperty("etape", t.getEtape().name());
-            obj.addProperty("chocolatier_id", t.getChocolatierUtilisantId() != null ? t.getChocolatierUtilisantId().toString() : null);
-            obj.addProperty("groupe", t.getGroupeDeChocolatier().name().toLowerCase());
-            EtapeTempereuse next = tempService.getEtapeSuivantePossible(t);
-            obj.addProperty("nextStep", next != null ? next.name() : "AUCUNE");
-            tempArr.add(obj);
-        }
-
-        JsonArray mouleArr = new JsonArray();
-        for (Mouleuse m : mouleService.getToutesLesMouleuses()) {
-            JsonObject obj = new JsonObject();
-            obj.addProperty("id", m.getId().toString());
-            obj.addProperty("etape", m.getEtape().name());
-            obj.addProperty("chocolatier_id", m.getChocolatierUtilisantId() != null ? m.getChocolatierUtilisantId().toString() : null);
-            obj.addProperty("groupe", m.getGroupeDeChocolatier().name().toLowerCase());
-            EtapeMouleuse next = mouleService.getEtapeSuivantePossible(m);
-            obj.addProperty("nextStep", next != null ? next.name() : "AUCUNE");
-            mouleArr.add(obj);
-        }
+        JsonArray tempereuseArray = tempService.getToutesLesMachinesCommeObjets();
+        JsonArray mouleusesArray = mouleService.getToutesLesMachinesCommeObjets();
 
         res.add("chocolatiers", chocoArr);
-        res.add("tempereuses", tempArr);
-        res.add("mouleuses", mouleArr);
+        res.add("tempereuses", tempereuseArray);
+        res.add("mouleuses", mouleusesArray);
         return res;
     }
 
@@ -174,7 +153,6 @@ public class ChocolatierService {
         }
     }
     
-
     public void reset() {
         chocolatierRepository.clear();
     }

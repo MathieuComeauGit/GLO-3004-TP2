@@ -3,11 +3,15 @@ ressource\MouleuseResource.class
 repository\TempereuseRepository.class
 domain\ChocolatierR.class
 service\ChocolatierService.class
+ressource\AbstractMachineResource.class
+service\AbstractMachineService.class
 ressource\InitResource.class
 Main.class
 ressource\ChocolatierResource.class
 repository\ChocolatierRepository.class
+domain\AbstractModel.class
 service\TempereuseService$1.class
+exceptions\BadCaseException.class
 service\MouleuseService$1.class
 service\MouleuseService.class
 ressource\StatusResource.class

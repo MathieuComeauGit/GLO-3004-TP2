@@ -6,29 +6,12 @@ import java.util.UUID;
 
 import domain.enums.GroupeDeChocolatier;
 
-public abstract class AbstractMachine<T> {
-    protected UUID id;
+public abstract class AbstractMachine<E extends Enum<E>> extends AbstractModel<E> {
     protected UUID chocolatierUtilisantId;
-    protected GroupeDeChocolatier groupeDeChocolatier;
     protected LinkedList<ChocolatierR> listeAttente = new LinkedList<>();
-    protected T etape;
 
-    public AbstractMachine(UUID id, GroupeDeChocolatier groupeDeChocolatier, T etapeInitiale) {
-        this.id = id;
-        this.groupeDeChocolatier = groupeDeChocolatier;
-        this.etape = etapeInitiale;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public GroupeDeChocolatier getGroupeDeChocolatier() {
-        return groupeDeChocolatier;
-    }
-
-    public void setGroupeDeChocolatier(GroupeDeChocolatier groupeDeChocolatier) {
-        this.groupeDeChocolatier = groupeDeChocolatier;
+    public AbstractMachine(UUID id, GroupeDeChocolatier groupeDeChocolatier, E etapeInitiale) {
+        super(id, groupeDeChocolatier, etapeInitiale);
     }
 
     public UUID getChocolatierUtilisantId() {
@@ -37,14 +20,6 @@ public abstract class AbstractMachine<T> {
 
     public void setChocolatierUtilisantId(UUID chocolatierUtilisantId) {
         this.chocolatierUtilisantId = chocolatierUtilisantId;
-    }
-
-    public T getEtape() {
-        return etape;
-    }
-
-    public void setEtape(T etape) {
-        this.etape = etape;
     }
 
     /* Fonctions pour la liste d'attente pour l'utilisation de la tempereuse */

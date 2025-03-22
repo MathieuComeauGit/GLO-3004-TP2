@@ -9,59 +9,19 @@ import repository.ChocolatierRepository;
 import repository.TempereuseRepository;
 import exceptions.BadCaseException;
 
-import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
-public class TempereuseService {
-    private final TempereuseRepository tempereuseRepository;
-    private final ChocolatierRepository chocolatierRepository;
-
+public class TempereuseService extends AbstractMachineService<EtapeTempereuse, Tempereuse, TempereuseRepository> {
     public TempereuseService(TempereuseRepository tempereuseRepository, ChocolatierRepository chocolatierRepository) {
-        this.tempereuseRepository = tempereuseRepository;
-        this.chocolatierRepository = chocolatierRepository;
+        super(tempereuseRepository, chocolatierRepository);
     }
 
-    public List<Tempereuse> getToutesLesTempereuses() {
-        return tempereuseRepository.findAll();
+    public void assignerTempereuse(Tempereuse tempereuse) {
+        super.assignerMachine(tempereuse, EtapeTempereuse.TEMPERE_CHOCOLAT);
     }
 
-    public Tempereuse getTempereuseDisponible(GroupeDeChocolatier groupeDeChocolatier) {
-        return tempereuseRepository.findAll()
-                .stream()
-                .filter(Tempereuse::estDisponible)
-                .filter(t -> t.getGroupeDeChocolatier() == groupeDeChocolatier)
-                .findFirst()
-                .orElse(null);
-    }
-    
-
-    public void assignerTempereuse(Tempereuse tempereuse, UUID chocolatierId) {
-        tempereuse.setChocolatierUtilisantId(chocolatierId);
-        tempereuse.setEtape(EtapeTempereuse.TEMPERE_CHOCOLAT);
-    }
-
-    public void libererTempereuse(Tempereuse tempereuse) {
-        tempereuse.rendreDisponible();
-    }
-
-    public List<Tempereuse> getTempereusesUtilisees() {
-        return tempereuseRepository.findAll()
-                .stream()
-                .filter(t -> !t.estDisponible())
-                .collect(Collectors.toList());
-    }
-
-    public Tempereuse getTempereuseAssociee(UUID chocolatierId) {
-        return tempereuseRepository.findAll()
-                .stream()
-                .filter(t -> chocolatierId.equals(t.getChocolatierUtilisantId()))
-                .findFirst()
-                .orElse(null);
-    }
-
-    public boolean avancerEtapeParTempereuseId(UUID tempereuseId) throws BadCaseException {
-        Tempereuse tempereuse = getTempereuseById(tempereuseId);
+    public boolean avancerEtapeParMachineId(UUID tempereuseId) throws BadCaseException {
+        Tempereuse tempereuse = getMachineById(tempereuseId);
         if (tempereuse == null || tempereuse.getChocolatierUtilisantId() == null)
             return false;
         
@@ -89,32 +49,21 @@ public class TempereuseService {
         return true;
     }
     
-    public void initialiserTempereusesGroupe(int nombre, GroupeDeChocolatier groupe) {
+    public void initialiserMachineGroupe(int nombre, GroupeDeChocolatier groupe) {
         // Supprimer les tempereuses du groupe spécifié
-        tempereuseRepository.findAll().removeIf(t -> t.getGroupeDeChocolatier() == groupe);
+        machineRepository.findAll().removeIf(t -> t.getGroupeDeChocolatier() == groupe);
     
         // Recréer les nouvelles tempereuses pour le groupe
         for (int i = 0; i < nombre; i++) {
             UUID id = UUID.randomUUID();
-            tempereuseRepository.save(new Tempereuse(id, groupe));
+            machineRepository.save(new Tempereuse(id, groupe));
         }
     }
-    
-    
     
     public EtapeTempereuse getEtapeSuivantePossible(Tempereuse tempereuse) {
         EtapeTempereuse[] etapes = EtapeTempereuse.values();
         int currentIndex = tempereuse.getEtape().ordinal();
         if (currentIndex + 1 >= etapes.length) return null;
         return etapes[currentIndex + 1];
-    }
-
-    public Tempereuse getTempereuseById(UUID id) {
-        return tempereuseRepository.findById(id);
-    }
-    
-    public void reset() {
-        tempereuseRepository.clear();
-    }
-    
+    }    
 }
