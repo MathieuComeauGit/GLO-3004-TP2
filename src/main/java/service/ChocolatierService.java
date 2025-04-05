@@ -41,7 +41,11 @@ public class ChocolatierService {
             case REQUIERE_TEMPEREUSE:
                 Tempereuse temp = tempereuseService.getMachineDisponible(chocolatier.getGroupeDeChocolatier());
                 if (temp == null) return false;
-                tempereuseService.assignerTempereuse(temp); //TODO bug ici présentement car chocolatier pas dans la liste d'attente
+                
+                // On ajoute le chocolatier à la file d'attente AVANT d'assigner
+                tempereuseService.requeteMachine(temp, chocolatier);
+                tempereuseService.assignerTempereuse(temp);
+                
                 next = EtapeChocolatier.TEMPERE_CHOCOLAT;
                 break;
     
@@ -56,7 +60,10 @@ public class ChocolatierService {
             case REQUIERE_MOULEUSE:
                 Mouleuse mDispo = mouleuseService.getMachineDisponible(chocolatier.getGroupeDeChocolatier());
                 if (mDispo == null) return false;
+                
+                mouleuseService.requeteMachine(mDispo, chocolatier);
                 mouleuseService.assignerMouleuse(mDispo, chocolatierId);
+                
                 next = EtapeChocolatier.REMPLIT;
                 break;
     
@@ -149,7 +156,9 @@ public class ChocolatierService {
     
         // Crée les nouveaux chocolatiers
         for (int i = 0; i < nombre; i++) {
-            chocolatierRepository.save(new ChocolatierR(groupe));
+            UUID id = UUID.randomUUID();
+            ChocolatierR chocolatier = new ChocolatierR(id, groupe);
+            chocolatierRepository.save(chocolatier);
         }
     }
     

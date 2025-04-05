@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("resetBtn").addEventListener("click", reset);
     document.getElementById("initBtnN").addEventListener("click", () => initGroup('n'));
     document.getElementById("initBtnB").addEventListener("click", () => initGroup('b'));
+
+    setInterval(loadStatus, 1000); // <- Ajout du polling toutes les 1 sec
     loadStatus();
 });
 
@@ -12,7 +14,16 @@ async function initGroup(group) {
         mouleuses: parseInt(document.getElementById(`nbMoule${group.toUpperCase()}`).value),
         groupe: group
     };
-    await axios.post(`/api/init_groupe`, payload);
+    await axios.post(`/api/init_run`, {
+        chocolatiersN: parseInt(document.getElementById("nbChocoN").value),
+        chocolatiersB: parseInt(document.getElementById("nbChocoB").value),
+        tempereusesN: parseInt(document.getElementById("nbTempN").value),
+        tempereusesB: parseInt(document.getElementById("nbTempB").value),
+        mouleusesN: parseInt(document.getElementById("nbMouleN").value),
+        mouleusesB: parseInt(document.getElementById("nbMouleB").value)
+    });
+    
+
     loadStatus();
 }
 
@@ -24,9 +35,9 @@ async function reset() {
 async function loadStatus() {
     const res = await axios.get("/api/status");
     const data = res.data;
-    renderChocolatiers(data.chocolatiers);
-    renderTempereuses(data.tempereuses);
-    renderMouleuses(data.mouleuses);
+    renderChocolatiers(data.chocolatiers || []);
+    renderTempereuses(data.tempereuses || []);
+    renderMouleuses(data.mouleuses || []);
 }
 
 function renderChocolatiers(chocolatiers) {
