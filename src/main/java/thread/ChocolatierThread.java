@@ -2,6 +2,7 @@ package thread;
 
 import domain.enums.GroupeDeChocolatier;
 import service.ChocolatierService;
+import service.SimulationService;
 
 import java.util.Random;
 import java.util.UUID;
@@ -23,14 +24,21 @@ public class ChocolatierThread extends Thread {
 
     @Override
     public void run() {
-        try {
-            UUID uuid = UUID.fromString(id);
-            while (true) {
-                chocolatierService.avancerEtape(uuid);
-                Thread.sleep(rand.nextInt(5_000) + 1_000); 
+        synchronized (SimulationService.class) {
+            try {
+                UUID uuid = UUID.fromString(id);
+                while (true) {
+                    if (SimulationService.isCurrentType(groupe)) {
+                        chocolatierService.avancerEtape(uuid);
+                        Thread.sleep(rand.nextInt(5_000) + 1_000); 
+                    }
+                    else {
+                        this.wait(); 
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 }

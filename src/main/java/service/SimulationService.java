@@ -29,10 +29,31 @@ public class SimulationService {
     private final List<TempereuseThread> tempereuseThreads = new ArrayList<>();
     private final List<MouleuseThread> mouleuseThreads = new ArrayList<>();
 
+    private static GroupeDeChocolatier currentGroupeDeChocolatier;
+
+    private void setPriority(GroupeDeChocolatier groupeDeChocolatier, Thread thread) {
+        if (groupeDeChocolatier == GroupeDeChocolatier.n) {
+            thread.setPriority(10); // Max priority
+        }
+        else {
+            thread.setPriority(5); // Normal priority
+        }
+    }
+
+    public static boolean isCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
+        return currentGroupeDeChocolatier == groupeDeChocolatier;
+    }
+
+    public static void setCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
+        SimulationService.currentGroupeDeChocolatier = groupeDeChocolatier;
+    }
+
     public void initSimulation(int chocoN, int chocoB, int tempN, int tempB, int mouleN, int mouleB) {
         chocolatierRepository.clear();
         tempereuseRepository.clear();
         mouleuseRepository.clear();
+
+        SimulationService.currentGroupeDeChocolatier = GroupeDeChocolatier.n;
     
         // TEMPEREUSES N
         for (int i = 0; i < tempN; i++) {
@@ -40,6 +61,7 @@ public class SimulationService {
             Tempereuse temp = new Tempereuse(id, GroupeDeChocolatier.n);
             tempereuseRepository.save(temp);
             TempereuseThread t = new TempereuseThread(id, "temp-n-" + i, tempereuseService);
+            setPriority(GroupeDeChocolatier.n, t);
             tempereuseThreads.add(t);
             t.start();
         }
@@ -50,6 +72,7 @@ public class SimulationService {
             Tempereuse temp = new Tempereuse(id, GroupeDeChocolatier.b);
             tempereuseRepository.save(temp);
             TempereuseThread t = new TempereuseThread(id, "temp-b-" + i, tempereuseService);
+            setPriority(GroupeDeChocolatier.b, t);
             tempereuseThreads.add(t);
             t.start();
         }
@@ -60,6 +83,7 @@ public class SimulationService {
             Mouleuse moule = new Mouleuse(id, GroupeDeChocolatier.n);
             mouleuseRepository.save(moule);
             MouleuseThread m = new MouleuseThread(id, "moule-n-" + i, mouleuseService);
+            setPriority(GroupeDeChocolatier.n, m);
             mouleuseThreads.add(m);
             m.start();
         }
@@ -70,6 +94,7 @@ public class SimulationService {
             Mouleuse moule = new Mouleuse(id, GroupeDeChocolatier.b);
             mouleuseRepository.save(moule);
             MouleuseThread m = new MouleuseThread(id, "moule-b-" + i, mouleuseService);
+            setPriority(GroupeDeChocolatier.b, m);
             mouleuseThreads.add(m);
             m.start();
         }
@@ -79,6 +104,7 @@ public class SimulationService {
             UUID id = UUID.randomUUID();
             chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.n));
             ChocolatierThread c = new ChocolatierThread(id.toString(), GroupeDeChocolatier.n, chocolatierService);
+            setPriority(GroupeDeChocolatier.n, c);
             chocolatierThreads.add(c);
             c.start();
         }
@@ -88,6 +114,7 @@ public class SimulationService {
             UUID id = UUID.randomUUID();
             chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.b));
             ChocolatierThread c = new ChocolatierThread(id.toString(), GroupeDeChocolatier.b, chocolatierService);
+            setPriority(GroupeDeChocolatier.b, c);
             chocolatierThreads.add(c);
             c.start();
         }
