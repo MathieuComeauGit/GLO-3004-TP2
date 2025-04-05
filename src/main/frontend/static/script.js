@@ -44,11 +44,16 @@ function renderChocolatiers(chocolatiers) {
         const wrapper = document.createElement("div");
         wrapper.className = "choco-wrapper";
 
+        const title = document.createElement("div");
+        title.className = "choco-title";
+        title.textContent = "Chocolatier: " + choco.id;
+        wrapper.appendChild(title);
+
         const bar = document.createElement("div");
         bar.className = "choco-bar";
 
         const steps = [
-            "AUCUNE", "REQUIERE_TEMPEREUSE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT",
+            "AUCUNE", "RUPTURE", "REQUIERE_TEMPEREUSE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT",
             "REQUIERE_MOULEUSE", "REMPLIT", "GARNIT", "FERME"
         ];
 

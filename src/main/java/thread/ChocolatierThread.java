@@ -33,7 +33,7 @@ public class ChocolatierThread extends Thread {
                     System.out.println("[CHOCOLATIER " + id + "] est bloqué ou aucune progression possible.");
                 }
 
-                Thread.sleep(rand.nextInt(5_000) + 1_000); // entre 1 et 5 secondes
+                Thread.sleep(rand.nextInt(5_000) + 1_000); 
             }
         } catch (Exception e) {
             e.printStackTrace();

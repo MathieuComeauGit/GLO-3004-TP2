@@ -8,21 +8,25 @@ import domain.Tempereuse;
 import domain.enums.EtapeChocolatier;
 import domain.enums.EtapeTempereuse;
 import domain.enums.GroupeDeChocolatier;
+import repository.ChocolatRepository;
 import repository.ChocolatierRepository;
 
 import java.util.UUID;
 
 public class ChocolatierService {
     private final ChocolatierRepository chocolatierRepository;
+    private final ChocolatRepository chocolatRepository;
     private final TempereuseService tempereuseService;
     private final MouleuseService mouleuseService;
 
     public ChocolatierService(ChocolatierRepository chocolatierRepository,
                               TempereuseService tempereuseService,
-                              MouleuseService mouleuseService) {
+                              MouleuseService mouleuseService, 
+                              ChocolatRepository chocolatRepository) {
         this.chocolatierRepository = chocolatierRepository;
         this.tempereuseService = tempereuseService;
         this.mouleuseService = mouleuseService;
+        this.chocolatRepository = chocolatRepository;
     }
 
     public boolean avancerEtape(UUID chocolatierId) {
@@ -34,7 +38,18 @@ public class ChocolatierService {
 
         switch (current) {
             case AUCUNE:
-                next = EtapeChocolatier.REQUIERE_TEMPEREUSE;
+                if (chocolatRepository.consommer()) {
+                    next = EtapeChocolatier.REQUIERE_TEMPEREUSE;
+                }
+                else {
+                    next = EtapeChocolatier.RUPTURE;
+                }
+                break;
+
+            case RUPTURE:
+                if (chocolatRepository.consommer()) {
+                    next = EtapeChocolatier.REQUIERE_TEMPEREUSE;
+                }
                 break;
 
             case REQUIERE_TEMPEREUSE:

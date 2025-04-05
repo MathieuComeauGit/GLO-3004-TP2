@@ -22,6 +22,6 @@ public class Main {
         new InitResource(simulationService);
 
         // Serveur prêt
-        System.out.println("✅ Serveur démarré sur http://localhost:4567");
+        System.out.println("Serveur démarré sur http://localhost:4567");
     }
 }
