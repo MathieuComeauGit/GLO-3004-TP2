@@ -26,13 +26,7 @@ public class ChocolatierThread extends Thread {
         try {
             UUID uuid = UUID.fromString(id);
             while (true) {
-                boolean avance = chocolatierService.avancerEtape(uuid);
-                if (avance) {
-                    System.out.println("[CHOCOLATIER " + id + "] a avancé d'une étape.");
-                } else {
-                    System.out.println("[CHOCOLATIER " + id + "] est bloqué ou aucune progression possible.");
-                }
-
+                chocolatierService.avancerEtape(uuid);
                 Thread.sleep(rand.nextInt(5_000) + 1_000); 
             }
         } catch (Exception e) {
