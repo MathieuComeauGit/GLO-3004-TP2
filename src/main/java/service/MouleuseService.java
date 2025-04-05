@@ -34,7 +34,9 @@ public class MouleuseService extends AbstractMachineService<EtapeMouleuse, Moule
                 return false;
 
             case AUCUNE:
-                mouleuse.setEtape(EtapeMouleuse.REMPLIT);
+                if (chocolatierAssocie != null) {
+                    mouleuse.setEtape(EtapeMouleuse.REMPLIT);
+                }
                 break;
 
             case REMPLIT:
