@@ -53,7 +53,7 @@ function renderChocolatiers(chocolatiers) {
         bar.className = "choco-bar";
 
         const steps = [
-            "AUCUNE", "RUPTURE", "REQUIERE_TEMPEREUSE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT",
+            "AUCUNE", "REQUIERE_TEMPEREUSE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT",
             "REQUIERE_MOULEUSE", "REMPLIT", "GARNIT", "FERME"
         ];
 
