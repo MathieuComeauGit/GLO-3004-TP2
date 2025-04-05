@@ -122,5 +122,18 @@ public class SimulationService {
 
         return res;
     }
+    
+    public void reset() {
+        chocolatierThreads.forEach(Thread::interrupt);
+        tempereuseThreads.forEach(Thread::interrupt);
+        mouleuseThreads.forEach(Thread::interrupt);
+        chocolatierThreads.clear();
+        tempereuseThreads.clear();
+        mouleuseThreads.clear();
+    
+        chocolatierRepository.clear();
+        tempereuseRepository.clear();
+        mouleuseRepository.clear();
+    }
 
 }

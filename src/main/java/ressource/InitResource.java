@@ -20,6 +20,8 @@ public class InitResource {
 
         // Permet d’obtenir l’état actuel
         get("/api/status", this::status);
+
+        post("/api/reset", this::resetSimulation);
     }
 
     private Object initRun(Request req, Response res) {
@@ -42,5 +44,12 @@ public class InitResource {
     private Object status(Request req, Response res) {
         res.type("application/json");
         return simulationService.getEtat();
+    }
+
+    private Object resetSimulation(Request req, Response res) {
+        simulationService.reset();
+        res.status(200);
+        res.type("application/json");
+        return "{\"message\": \"Simulation réinitialisée avec succès\"}";
     }
 }

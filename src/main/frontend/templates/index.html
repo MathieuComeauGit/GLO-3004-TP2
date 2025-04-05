@@ -6,58 +6,77 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Dashboard Chocolat</h1>
+    <h1>🍫 Dashboard de la Simulation Chocolat</h1>
 
-    <div class="dashboard-container">
-        <div class="group-column">
-            <h2>Initialisation Groupe N</h2>
-            <div class="init-block">
-                <label>Chocolatiers N: <input id="nbChocoN" type="number" value="2"></label>
-                <label>Tempereuses N: <input id="nbTempN" type="number" value="2"></label>
-                <label>Mouleuses N: <input id="nbMouleN" type="number" value="2"></label>
-                <button id="initBtnN">Init Groupe N</button>
-            </div>
+    <!-- Bloc d'initialisation -->
+    <div class="dashboard-container init-container">
+        <div class="group-column init-column">
+            <h2>Initialisation Simulation</h2>
 
-            <div class="section">
-                <h3>Chocolatiers Groupe N</h3>
-                <div id="groupe-n-chocolatiers"></div>
-            </div>
-            <div class="section">
-                <h3>Tempereuses Groupe N</h3>
-                <div id="groupe-n-tempereuses"></div>
-            </div>
-            <div class="section">
-                <h3>Mouleuses Groupe N</h3>
-                <div id="groupe-n-mouleuses"></div>
-            </div>
-        </div>
+            <div class="init-block-horizontal">
+                <div class="init-group">
+                    <h3>Groupe N</h3>
+                    <label>Chocolatiers: <input id="nbChocoN" type="number" value="2"></label>
+                    <label>Tempereuses: <input id="nbTempN" type="number" value="1"></label>
+                    <label>Mouleuses: <input id="nbMouleN" type="number" value="1"></label>
+                </div>
 
-        <div class="group-column">
-            <h2>Initialisation Groupe B</h2>
-            <div class="init-block">
-                <label>Chocolatiers B: <input id="nbChocoB" type="number" value="2"></label>
-                <label>Tempereuses B: <input id="nbTempB" type="number" value="2"></label>
-                <label>Mouleuses B: <input id="nbMouleB" type="number" value="2"></label>
-                <button id="initBtnB">Init Groupe B</button>
+                <div class="init-group">
+                    <h3>Groupe B</h3>
+                    <label>Chocolatiers: <input id="nbChocoB" type="number" value="2"></label>
+                    <label>Tempereuses: <input id="nbTempB" type="number" value="1"></label>
+                    <label>Mouleuses: <input id="nbMouleB" type="number" value="1"></label>
+                </div>
             </div>
 
-            <div class="section">
-                <h3>Chocolatiers Groupe B</h3>
-                <div id="groupe-b-chocolatiers"></div>
-            </div>
-            <div class="section">
-                <h3>Tempereuses Groupe B</h3>
-                <div id="groupe-b-tempereuses"></div>
-            </div>
-            <div class="section">
-                <h3>Mouleuses Groupe B</h3>
-                <div id="groupe-b-mouleuses"></div>
+            <div class="init-actions">
+                <button id="initBtn" class="btn btn-init">Lancer Simulation</button>
+                <button id="resetBtn" class="btn btn-reset">Réinitialiser</button>
             </div>
         </div>
     </div>
 
-    <div class="reset-container">
-        <button id="resetBtn">Reset Global</button>
+    <!-- Sections principales -->
+    <div class="dashboard-container">
+        <!-- Groupe N -->
+        <div class="group-column">
+            <h2>Groupe N</h2>
+
+            <div class="section">
+                <h3>Chocolatiers</h3>
+                <div id="groupe-n-chocolatiers"></div>
+            </div>
+
+            <div class="section">
+                <h3>Tempereuses</h3>
+                <div id="groupe-n-tempereuses"></div>
+            </div>
+
+            <div class="section">
+                <h3>Mouleuses</h3>
+                <div id="groupe-n-mouleuses"></div>
+            </div>
+        </div>
+
+        <!-- Groupe B -->
+        <div class="group-column">
+            <h2>Groupe B</h2>
+
+            <div class="section">
+                <h3>Chocolatiers</h3>
+                <div id="groupe-b-chocolatiers"></div>
+            </div>
+
+            <div class="section">
+                <h3>Tempereuses</h3>
+                <div id="groupe-b-tempereuses"></div>
+            </div>
+
+            <div class="section">
+                <h3>Mouleuses</h3>
+                <div id="groupe-b-mouleuses"></div>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
