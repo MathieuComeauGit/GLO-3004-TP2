@@ -15,6 +15,7 @@ import thread.MouleuseThread;
 import thread.TempereuseThread;
 
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 public class SimulationService {
     private final ChocolatierRepository chocolatierRepository = new ChocolatierRepository();
@@ -29,6 +30,9 @@ public class SimulationService {
     private final List<TempereuseThread> tempereuseThreads = new ArrayList<>();
     private final List<MouleuseThread> mouleuseThreads = new ArrayList<>();
 
+    // 1 latch pour chaque thread pour chaque actopm, TODO ajouter le type après
+    public static CountDownLatch[][] chocolatiersActions;
+
     private static GroupeDeChocolatier currentGroupeDeChocolatier;
 
     private void setPriority(GroupeDeChocolatier groupeDeChocolatier, Thread thread) {
@@ -40,12 +44,17 @@ public class SimulationService {
         }
     }
 
-    public static boolean isCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
-        return currentGroupeDeChocolatier == groupeDeChocolatier;
+    private static void setCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
+        SimulationService.currentGroupeDeChocolatier = groupeDeChocolatier;
     }
 
-    public static void setCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
-        SimulationService.currentGroupeDeChocolatier = groupeDeChocolatier;
+    public static void changeCurrentType() {
+        GroupeDeChocolatier nextType = SimulationService.currentGroupeDeChocolatier == GroupeDeChocolatier.n ? GroupeDeChocolatier.b : GroupeDeChocolatier.n;
+        setCurrentType(nextType);
+    }
+
+    public static boolean isCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
+        return currentGroupeDeChocolatier == groupeDeChocolatier;
     }
 
     public void initSimulation(int chocoN, int chocoB, int tempN, int tempB, int mouleN, int mouleB) {
@@ -53,7 +62,17 @@ public class SimulationService {
         tempereuseRepository.clear();
         mouleuseRepository.clear();
 
-        SimulationService.currentGroupeDeChocolatier = GroupeDeChocolatier.n;
+        setCurrentType(GroupeDeChocolatier.n);
+
+        // // Nombre de threads (chocolatiers), nombre d'actions pour le chocolatier
+        SimulationService.chocolatiersActions = new CountDownLatch[chocoN][8]; 
+
+        // // Initialiser les latch
+        for (int i = 0; i < chocoN; i++) { // Nombre de threads
+            for (int j = 0; j < 8; j++) { // Nombre d'actions
+                chocolatiersActions[i][j] = new CountDownLatch(chocoN);
+            }
+        }
     
         // TEMPEREUSES N
         for (int i = 0; i < tempN; i++) {
@@ -103,7 +122,7 @@ public class SimulationService {
         for (int i = 0; i < chocoN; i++) {
             UUID id = UUID.randomUUID();
             chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.n));
-            ChocolatierThread c = new ChocolatierThread(id.toString(), GroupeDeChocolatier.n, chocolatierService);
+            ChocolatierThread c = new ChocolatierThread(id.toString(), i, GroupeDeChocolatier.n, chocolatierService);
             setPriority(GroupeDeChocolatier.n, c);
             chocolatierThreads.add(c);
             c.start();
@@ -113,7 +132,7 @@ public class SimulationService {
         for (int i = 0; i < chocoB; i++) {
             UUID id = UUID.randomUUID();
             chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.b));
-            ChocolatierThread c = new ChocolatierThread(id.toString(), GroupeDeChocolatier.b, chocolatierService);
+            ChocolatierThread c = new ChocolatierThread(id.toString(), i, GroupeDeChocolatier.b, chocolatierService);
             setPriority(GroupeDeChocolatier.b, c);
             chocolatierThreads.add(c);
             c.start();

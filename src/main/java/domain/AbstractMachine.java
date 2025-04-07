@@ -28,7 +28,7 @@ public abstract class AbstractMachine<E extends Enum<E>> extends AbstractModel<E
     }
 
     public void ajouteChocolatierListeAttente(ChocolatierR chocolatier) {
-        listeAttente.add(chocolatier);
+        listeAttente.addLast(chocolatier);
     }
 
     public void retirerChocolatierListeAttente(ChocolatierR chocolatier) {
