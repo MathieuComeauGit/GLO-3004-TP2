@@ -32,9 +32,7 @@ public class ChocolatierThread extends Thread {
             while (true) {
                 if (SimulationService.isCurrentType(groupe)) {
                     chocolatierService.avancerEtape(uuid, position);
-                    Thread.sleep(rand.nextInt(5_000) + 1_000); 
-                } else {
-                    this.wait(); 
+                    // Thread.sleep(rand.nextInt(5_000) + 1_000); 
                 }
             } 
         } catch (Exception e) {

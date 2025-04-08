@@ -17,6 +17,7 @@ service\ChocolatierService$1.class
 domain\enums\EtapeChocolatier.class
 service\TempereuseService.class
 service\SimulationService.class
+thread\ChocolatierCountdown$1.class
 domain\enums\GroupeDeChocolatier.class
 thread\ChocolatierThread.class
 domain\enums\EtapeTempereuse.class

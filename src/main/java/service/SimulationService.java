@@ -57,10 +57,20 @@ public class SimulationService {
         return currentGroupeDeChocolatier == groupeDeChocolatier;
     }
 
-    public static ChocolatierCountdown getCurrentCountdown() {
-        return SimulationService.currentGroupeDeChocolatier == GroupeDeChocolatier.n 
-            ? SimulationService.chocolatierNCountdown 
-            : SimulationService.chocolatierBCountdown;
+    public static void updateCurrentCountdown(int position, EtapeChocolatier etape) {
+        if (SimulationService.currentGroupeDeChocolatier == GroupeDeChocolatier.n) {
+            SimulationService.chocolatierNCountdown.updateCountdown(position, etape); 
+        } else {
+            SimulationService.chocolatierBCountdown.updateCountdown(position, etape);
+        }
+    }
+
+    public static void resetCurrentCountdown() {
+        if (SimulationService.currentGroupeDeChocolatier == GroupeDeChocolatier.n) {
+            SimulationService.chocolatierNCountdown.resetCountdown();; 
+        } else {
+            SimulationService.chocolatierBCountdown.resetCountdown();
+        }
     }
 
     public void initSimulation(int chocoN, int chocoB, int tempN, int tempB, int mouleN, int mouleB) {

@@ -1,7 +1,8 @@
 package thread;
 
-
+import domain.enums.EtapeChocolatier;
 import domain.enums.GroupeDeChocolatier;
+
 import java.util.concurrent.CountDownLatch;
 
 public class ChocolatierCountdown {
@@ -36,9 +37,53 @@ public class ChocolatierCountdown {
 
     public int getNombreDeChocolatiers() { return nombreDeChocolatiers; }
     public GroupeDeChocolatier getGroupe() { return groupeDeChocolatier; }
-    public CountDownLatch[] getPasDepasseTempereChocolat() { return PasDepasseTempereChocolat; }
-    public CountDownLatch[] getPasDepasseDonneChocolat() { return PasDepasseDonneChocolat; }
-    public CountDownLatch[] getPasDepasseRemplit() { return PasDepasseRemplit; }
-    public CountDownLatch[] getPasDepasseGarnit() { return PasDepasseGarnit; }
-    public CountDownLatch[] getPasDepasseFerme() { return PasDepasseFerme; }
+
+    public void updateCountdown(int position, EtapeChocolatier etape) {
+        try {
+            switch (etape) {
+                case TEMPERE_CHOCOLAT:
+                    if (position != 0) {
+                        PasDepasseTempereChocolat[position - 1].await();
+                    }
+
+                    PasDepasseTempereChocolat[position].countDown();
+                    break;
+
+                case DONNE_CHOCOLAT:
+                    if (position != 0) {
+                        PasDepasseDonneChocolat[position - 1].await();
+                    }
+
+                    PasDepasseDonneChocolat[position].countDown();
+                    break;
+
+                case REMPLIT:
+                    if (position != 0) {
+                        PasDepasseRemplit[position - 1].await();
+                    }
+                    PasDepasseRemplit[position].countDown();
+                    break;
+
+                case GARNIT:
+                    if (position != 0) {
+                        PasDepasseGarnit[position - 1].await();
+                    }
+                    PasDepasseGarnit[position].countDown();
+
+                    break;
+
+                case FERME:
+                    if (position != 0) {
+                        PasDepasseFerme[position - 1].await();
+                    }
+                    PasDepasseFerme[position].countDown();
+                    break;
+
+                default:
+                    break;
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
 }
