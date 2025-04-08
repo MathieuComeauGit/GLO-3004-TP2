@@ -26,11 +26,11 @@ public class ChocolatierCountdown {
 
     public void resetCountdown() {
         for (int i = 0; i < nombreDeChocolatiers; i++) { // Nombre de threads
-            PasDepasseTempereChocolat[i] = new CountDownLatch(nombreDeChocolatiers);
-            PasDepasseDonneChocolat[i] = new CountDownLatch(nombreDeChocolatiers);
-            PasDepasseRemplit[i] = new CountDownLatch(nombreDeChocolatiers);
-            PasDepasseGarnit[i] = new CountDownLatch(nombreDeChocolatiers);
-            PasDepasseFerme[i] = new CountDownLatch(nombreDeChocolatiers);
+            PasDepasseTempereChocolat[i] = new CountDownLatch(1);
+            PasDepasseDonneChocolat[i] = new CountDownLatch(1);
+            PasDepasseRemplit[i] = new CountDownLatch(1);
+            PasDepasseGarnit[i] = new CountDownLatch(1);
+            PasDepasseFerme[i] = new CountDownLatch(1);
         }
     }
 
