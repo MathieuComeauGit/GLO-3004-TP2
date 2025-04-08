@@ -115,8 +115,7 @@ public class ChocolatierService {
                         mouleuseService.libererMachine(associee);
                     next = EtapeChocolatier.AUCUNE;
 
-                    // Last chocolatier
-                    if (position == chocolatierRepository.getNumberOfItems() - 1) {
+                    if (position == SimulationService.nombreChocolatiers - 1) {
                         // Reset the countdowns for the next run
                         SimulationService.getCurrentCountdown().resetCountdown();
                         // Switch to other groupe
@@ -135,14 +134,11 @@ public class ChocolatierService {
         return true;
     }
 
-    public EtapeChocolatier getEtapeSuivantePossible(ChocolatierR chocolatier, int position) {
-        try {
-            avancerEtape(chocolatier.getId(), position); // tentative d'avancement réelle
-        } catch (Exception e) {
-            return EtapeChocolatier.BLOCKED;
-        }
-
-        return chocolatier.getEtape();
+    public EtapeChocolatier getEtapeSuivantePossible(ChocolatierR chocolatier) {
+        EtapeChocolatier[] etapes = EtapeChocolatier.values();
+        int currentIndex = chocolatier.getEtape().ordinal();
+        if (currentIndex + 1 >= etapes.length) return null;
+        return etapes[currentIndex + 1];
     }
 
     public void initialiserChocolatiersGroupe(int nombre, GroupeDeChocolatier groupe) {
