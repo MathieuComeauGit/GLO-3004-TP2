@@ -10,12 +10,12 @@ import domain.enums.GroupeDeChocolatier;
 import repository.ChocolatierRepository;
 import repository.MouleuseRepository;
 import repository.TempereuseRepository;
+import thread.ChocolatierCountdown;
 import thread.ChocolatierThread;
 import thread.MouleuseThread;
 import thread.TempereuseThread;
 
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
 
 public class SimulationService {
     private final ChocolatierRepository chocolatierRepository = new ChocolatierRepository();
@@ -30,18 +30,26 @@ public class SimulationService {
     private final List<TempereuseThread> tempereuseThreads = new ArrayList<>();
     private final List<MouleuseThread> mouleuseThreads = new ArrayList<>();
 
-    // 1 latch pour chaque thread pour chaque actopm, TODO ajouter le type après
-    public static CountDownLatch[][] chocolatiersActions;
+    // Conditions pour l'ordre des chocolatiers
+    private static ChocolatierCountdown chocolatierNCountdown;
+    private static ChocolatierCountdown chocolatierBCountdown;
 
     private static GroupeDeChocolatier currentGroupeDeChocolatier;
 
+    private ChocolatierThread findThreadById(String id) {
+        for (ChocolatierThread t : chocolatierThreads) {
+            if (t.getChocolatierId() == id) {
+                return t;
+            }
+        }
+        return null;
+    }
+
     private void setPriority(GroupeDeChocolatier groupeDeChocolatier, Thread thread) {
-        if (groupeDeChocolatier == GroupeDeChocolatier.n) {
-            thread.setPriority(10); // Max priority
-        }
-        else {
-            thread.setPriority(5); // Normal priority
-        }
+        // 10 is Max priority, 5 if Normal priority
+        int priority = groupeDeChocolatier == GroupeDeChocolatier.n ? 10 : 5;
+        thread.setPriority(priority);
+        
     }
 
     private static void setCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
@@ -57,6 +65,12 @@ public class SimulationService {
         return currentGroupeDeChocolatier == groupeDeChocolatier;
     }
 
+    public static ChocolatierCountdown getCurrentCountdown() {
+        return SimulationService.currentGroupeDeChocolatier == GroupeDeChocolatier.n 
+            ? SimulationService.chocolatierNCountdown 
+            : SimulationService.chocolatierBCountdown;
+    }
+
     public void initSimulation(int chocoN, int chocoB, int tempN, int tempB, int mouleN, int mouleB) {
         chocolatierRepository.clear();
         tempereuseRepository.clear();
@@ -64,16 +78,12 @@ public class SimulationService {
 
         setCurrentType(GroupeDeChocolatier.n);
 
-        // // Nombre de threads (chocolatiers), nombre d'actions pour le chocolatier
-        SimulationService.chocolatiersActions = new CountDownLatch[chocoN][8]; 
+        // // Initialisation des CountdownLatch
+        SimulationService.chocolatierNCountdown = new ChocolatierCountdown(chocoN, GroupeDeChocolatier.n);
+        SimulationService.chocolatierBCountdown = new ChocolatierCountdown(chocoB, GroupeDeChocolatier.b);
+        SimulationService.chocolatierNCountdown.resetCountdown();
+        SimulationService.chocolatierBCountdown.resetCountdown();
 
-        // // Initialiser les latch
-        for (int i = 0; i < chocoN; i++) { // Nombre de threads
-            for (int j = 0; j < 8; j++) { // Nombre d'actions
-                chocolatiersActions[i][j] = new CountDownLatch(chocoN);
-            }
-        }
-    
         // TEMPEREUSES N
         for (int i = 0; i < tempN; i++) {
             UUID id = UUID.randomUUID();
@@ -150,8 +160,13 @@ public class SimulationService {
             o.addProperty("id", c.getId().toString());
             o.addProperty("groupe", c.getGroupeDeChocolatier().name().toLowerCase());
             o.addProperty("etape", c.getEtape().name());
-            EtapeChocolatier next = chocolatierService.getEtapeSuivantePossible(c);
-            o.addProperty("nextStep", next != null ? next.name() : "AUCUNE");
+
+            // TODO
+            ChocolatierThread thread = findThreadById(c.getId().toString());
+            if (thread != null) {
+                EtapeChocolatier next = chocolatierService.getEtapeSuivantePossible(c, thread.getPosition());
+                o.addProperty("nextStep", next != null ? next.name() : "AUCUNE");
+            }
             chocoArray.add(o);
         }
 
