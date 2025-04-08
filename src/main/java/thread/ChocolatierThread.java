@@ -27,20 +27,18 @@ public class ChocolatierThread extends Thread {
 
     @Override
     public void run() {
-        synchronized (SimulationService.class) {
-            try {
-                UUID uuid = UUID.fromString(id);
-                while (true) {
-                    if (SimulationService.isCurrentType(groupe)) {
-                        chocolatierService.avancerEtape(uuid, position);
-                        Thread.sleep(rand.nextInt(5_000) + 1_000); 
-                    } else {
-                        this.wait(); 
-                    }
+        try {
+            UUID uuid = UUID.fromString(id);
+            while (true) {
+                if (SimulationService.isCurrentType(groupe)) {
+                    chocolatierService.avancerEtape(uuid, position);
+                    Thread.sleep(rand.nextInt(5_000) + 1_000); 
+                } else {
+                    this.wait(); 
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            } 
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

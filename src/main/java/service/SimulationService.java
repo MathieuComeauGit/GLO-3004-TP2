@@ -49,7 +49,6 @@ public class SimulationService {
         // 10 is Max priority, 5 if Normal priority
         int priority = groupeDeChocolatier == GroupeDeChocolatier.n ? 10 : 5;
         thread.setPriority(priority);
-        
     }
 
     private static void setCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
