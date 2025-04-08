@@ -1,14 +1,12 @@
-DON'T FORGET TO CHANGE TO LISEZ MOI
-
 **Equipe 18**\
 *Membres de l'équipe*\
 Maude Beaulieu (536 893 388)\
 Mathieu Comeau (111 269 609)\
 Sylviane Chedjoun Guiatchuing (111 287 581)
 
-# Simulation de Production de Chocolat – README
+# Simulation de Production de Chocolat – LisezMoi
 
-## 📦 Prérequis
+## Prérequis
 
 Ce projet est une simulation de processus de fabrication de chocolat utilisant des **threads Java** pour simuler l'interaction entre des chocolatiers, tempereuses et mouleuses.
 
@@ -21,26 +19,26 @@ Le projet utilise :
 
 ---
 
-## 🚀 Lancer la simulation
+## Lancer la simulation
 
 ### 1. Prérequis d’installation
 
 Assurez-vous d’avoir les éléments suivants installés sur votre machine :
 
-- **Java 17 ou plus**
+- **Java 21 ou plus**
 - **Maven**
 
-#### ✅ Installer Java
+#### Installer Java
 
 - **Windows / Mac / Linux** : Téléchargez le JDK depuis https://adoptium.net ou utilisez un gestionnaire de paquets :
 
 ```bash
 # macOS avec Homebrew
-brew install openjdk@17
+brew install openjdk@21
 
 # Ubuntu / Debian
 sudo apt update
-sudo apt install openjdk-17-jdk
+sudo apt install openjdk-21-jdk
 
 # Windows
 # Télécharger et installer depuis https://adoptium.net
@@ -52,7 +50,7 @@ Ensuite, vérifiez :
 java -version
 ```
 
-#### ✅ Installer Maven
+#### Installer Maven
 
 ```bash
 # macOS
@@ -132,6 +130,9 @@ REQUIERE_MOULEUSE → REMPLIT → GARNIT → FERME → AUCUNE
 - Les étapes en **violet** indiquent qu’ils sont temporairement sous le **contrôle d’une machine**.
 - Un chocolatier peut rester bloqué s’il attend une machine occupée.
 
+Il est possible qu'un chocolatier tombe en RUPTURE lors de REQUIERE_TEMPEREUSE. Il va alors y avoir un approvisionnement, puis on retourne
+à REQUIERE_TEMPEREUSE.
+
 #### Machines (Tempereuses et Mouleuses)
 
 Chaque machine est représentée par une **mini barre de progression** avec son ID et l’ID du chocolatier en cours d’utilisation (si applicable).
@@ -159,3 +160,8 @@ Les machines avancent automatiquement, indépendamment, en suivant leur propre l
 - Permet un redémarrage complet
 
 ---
+
+## Précisions sur le comportement
+
+Les comportements d'alternance entre les chocolatiers de type N et de type B et
+l'ordre de travail des chocolatiers n'ont pas pu être implémentés. 

@@ -1,6 +1,5 @@
 package thread;
 
-import domain.enums.GroupeDeChocolatier;
 import service.ChocolatierService;
 
 import java.util.Random;
@@ -8,13 +7,11 @@ import java.util.UUID;
 
 public class ChocolatierThread extends Thread {
     private final UUID id;
-    private final GroupeDeChocolatier groupe;
     private final ChocolatierService chocolatierService;
     private final Random rand = new Random();
 
-    public ChocolatierThread(String id, GroupeDeChocolatier groupe, ChocolatierService chocolatierService) {
-        this.id = UUID.fromString(id);
-        this.groupe = groupe;
+    public ChocolatierThread(UUID id, ChocolatierService chocolatierService) {
+        this.id = id;
         this.chocolatierService = chocolatierService;
     }
 

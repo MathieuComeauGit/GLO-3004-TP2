@@ -1,6 +1,5 @@
 package service;
 
-import domain.ChocolatierR;
 import domain.AbstractMachine;
 import domain.enums.GroupeDeChocolatier;
 import exceptions.BadCaseException;
@@ -74,12 +73,6 @@ public abstract class AbstractMachineService<E extends Enum<E>, M extends Abstra
     public M getMachineById(UUID id) {
         return machineRepository.findById(id);
     }
-
-    // public void assignerMachine(M machine, E etape) {
-    //     machine.setChocolatierUtilisantId(chocolatier.getId());
-    //     machine.setEtape(etape);
-
-    // }
 
     public void libererMachine(M machine) {
         machine.rendreDisponible();

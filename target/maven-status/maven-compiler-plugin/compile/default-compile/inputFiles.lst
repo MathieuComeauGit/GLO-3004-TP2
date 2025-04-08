@@ -1,26 +1,26 @@
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\repository\TempereuseRepository.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\ressource\InitResource.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\service\AbstractMachineService.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\thread\ChocolatierThread.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\exceptions\BadCaseException.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\repository\MouleuseRepository.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\Main.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\ChocolatierR.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\AbstractMachine.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\repository\ChocolatierRepository.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\enums\EtapeTempereuse.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\repository\ChocolatRepository.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\enums\EtapeMouleuse.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\AbstractModel.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\Mouleuse.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\Tempereuse.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\enums\EtapeChocolatier.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\service\MouleuseService.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\service\SimulationService.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\thread\ApprovisionnementThread.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\thread\MouleuseThread.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\thread\TempereuseThread.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\repository\BaseRepository.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\domain\enums\GroupeDeChocolatier.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\service\ChocolatierService.java
-C:\MathieuComeau\Ulaval\Hiver2025\Spécification formel\GLO-3004-TP2\src\main\java\service\TempereuseService.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\ChocolatierR.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\AbstractMachine.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\repository\BaseRepository.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\Tempereuse.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\thread\ChocolatierThread.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\service\TempereuseService.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\thread\ApprovisionnementThread.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\repository\ChocolatierRepository.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\service\AbstractMachineService.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\exceptions\BadCaseException.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\Main.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\thread\MouleuseThread.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\service\ChocolatierService.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\repository\ChocolatRepository.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\enums\EtapeChocolatier.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\Mouleuse.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\repository\MouleuseRepository.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\enums\EtapeMouleuse.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\enums\GroupeDeChocolatier.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\ressource\InitResource.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\service\MouleuseService.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\AbstractModel.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\repository\TempereuseRepository.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\thread\TempereuseThread.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\domain\enums\EtapeTempereuse.java
+C:\Users\mimib\Documents\GIT\GLO3004\src\main\java\service\SimulationService.java

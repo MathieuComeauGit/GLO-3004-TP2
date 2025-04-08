@@ -2,10 +2,8 @@ package service;
 
 import domain.ChocolatierR;
 import domain.Mouleuse;
-import domain.Tempereuse;
 import domain.enums.EtapeChocolatier;
 import domain.enums.EtapeMouleuse;
-import domain.enums.EtapeTempereuse;
 import domain.enums.GroupeDeChocolatier;
 import exceptions.BadCaseException;
 import repository.ChocolatierRepository;

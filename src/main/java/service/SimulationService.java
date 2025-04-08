@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import domain.ChocolatierR;
 import domain.Mouleuse;
 import domain.Tempereuse;
-import domain.enums.EtapeChocolatier;
 import domain.enums.GroupeDeChocolatier;
 import repository.ChocolatRepository;
 import repository.ChocolatierRepository;
@@ -50,6 +49,7 @@ public class SimulationService {
             Tempereuse temp = new Tempereuse(id, GroupeDeChocolatier.n);
             tempereuseRepository.save(temp);
             TempereuseThread t = new TempereuseThread(id, "temp-n-" + i, tempereuseService);
+            t.setPriority(10); // Max priority
             tempereuseThreads.add(t);
             t.start();
         }
@@ -60,6 +60,7 @@ public class SimulationService {
             Tempereuse temp = new Tempereuse(id, GroupeDeChocolatier.b);
             tempereuseRepository.save(temp);
             TempereuseThread t = new TempereuseThread(id, "temp-b-" + i, tempereuseService);
+            t.setPriority(5); // Normal priority
             tempereuseThreads.add(t);
             t.start();
         }
@@ -70,6 +71,7 @@ public class SimulationService {
             Mouleuse moule = new Mouleuse(id, GroupeDeChocolatier.n);
             mouleuseRepository.save(moule);
             MouleuseThread m = new MouleuseThread(id, "moule-n-" + i, mouleuseService);
+            m.setPriority(10);
             mouleuseThreads.add(m);
             m.start();
         }
@@ -81,6 +83,7 @@ public class SimulationService {
             mouleuseRepository.save(moule);
             MouleuseThread m = new MouleuseThread(id, "moule-b-" + i, mouleuseService);
             mouleuseThreads.add(m);
+            m.setPriority(5);
             m.start();
         }
 
@@ -88,7 +91,8 @@ public class SimulationService {
         for (int i = 0; i < chocoN; i++) {
             UUID id = UUID.randomUUID();
             chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.n));
-            ChocolatierThread c = new ChocolatierThread(id.toString(), GroupeDeChocolatier.n, chocolatierService);
+            ChocolatierThread c = new ChocolatierThread(id, chocolatierService);
+            c.setPriority(10);
             chocolatierThreads.add(c);
             c.start();
         }
@@ -97,8 +101,9 @@ public class SimulationService {
         for (int i = 0; i < chocoB; i++) {
             UUID id = UUID.randomUUID();
             chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.b));
-            ChocolatierThread c = new ChocolatierThread(id.toString(), GroupeDeChocolatier.b, chocolatierService);
+            ChocolatierThread c = new ChocolatierThread(id, chocolatierService);
             chocolatierThreads.add(c);
+            c.setPriority(5);
             c.start();
         }
 
