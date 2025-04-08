@@ -7,30 +7,28 @@ import java.util.Random;
 import java.util.UUID;
 
 public class ChocolatierThread extends Thread {
-    private final String id;
+    private final UUID id;
     private final GroupeDeChocolatier groupe;
     private final ChocolatierService chocolatierService;
     private final Random rand = new Random();
 
     public ChocolatierThread(String id, GroupeDeChocolatier groupe, ChocolatierService chocolatierService) {
-        this.id = id;
+        this.id = UUID.fromString(id);
         this.groupe = groupe;
         this.chocolatierService = chocolatierService;
     }
 
-    public String getChocolatierId() { return id; }
-    public GroupeDeChocolatier getGroupe() { return groupe; }
-
     @Override
     public void run() {
         try {
-            UUID uuid = UUID.fromString(id);
             while (true) {
-                chocolatierService.avancerEtape(uuid);
-                Thread.sleep(rand.nextInt(5_000) + 1_000); 
+                chocolatierService.avancerEtape(id);
+                Thread.sleep(1000 + rand.nextInt(5000));
             }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("[CHOCOLATIER] Erreur : " + e.getMessage());
         }
     }
 }

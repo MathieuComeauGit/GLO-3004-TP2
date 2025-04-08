@@ -1,9 +1,10 @@
 package domain.enums;
 
 public enum EtapeChocolatier {
-    BLOCKED,    
+    BLOCKED,
     AUCUNE,
     REQUIERE_TEMPEREUSE,
+    RUPTURE, 
     TEMPERE_CHOCOLAT,
     DONNE_CHOCOLAT,
     REQUIERE_MOULEUSE,

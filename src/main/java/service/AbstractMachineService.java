@@ -26,7 +26,6 @@ public abstract class AbstractMachineService<E extends Enum<E>, M extends Abstra
 
     public abstract boolean avancerEtapeParMachineId(UUID machineId) throws BadCaseException;
     public abstract void initialiserMachineGroupe(int nombre, GroupeDeChocolatier groupe);
-    public abstract E getEtapeSuivantePossible(M machine);
 
     /* Récupérer une ou des machines */
     public List<M> getToutesLesMachines() {
@@ -41,8 +40,6 @@ public abstract class AbstractMachineService<E extends Enum<E>, M extends Abstra
             obj.addProperty("etape", m.getEtape().name());
             obj.addProperty("chocolatier_id", m.getChocolatierUtilisantId() != null ? m.getChocolatierUtilisantId().toString() : null);
             obj.addProperty("groupe", m.getGroupeDeChocolatier().name().toLowerCase());
-            E next = getEtapeSuivantePossible(m);
-            obj.addProperty("nextStep", next != null ? next.name() : "AUCUNE");
             machinesArray.add(obj);
         }
 
@@ -78,17 +75,11 @@ public abstract class AbstractMachineService<E extends Enum<E>, M extends Abstra
         return machineRepository.findById(id);
     }
 
-    /* Gestion des étapes */
-    public void requeteMachine(M machine, ChocolatierR chocolatier) {
-        machine.ajouteChocolatierListeAttente(chocolatier);
-    }
+    // public void assignerMachine(M machine, E etape) {
+    //     machine.setChocolatierUtilisantId(chocolatier.getId());
+    //     machine.setEtape(etape);
 
-    public void assignerMachine(M machine, E etape) {
-        ChocolatierR chocolatier = machine.prochainChocolatier();
-        machine.setChocolatierUtilisantId(chocolatier.getId());
-        machine.setEtape(etape);
-        machine.retirerChocolatierListeAttente(chocolatier);
-    }
+    // }
 
     public void libererMachine(M machine) {
         machine.rendreDisponible();

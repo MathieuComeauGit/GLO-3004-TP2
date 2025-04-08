@@ -1,26 +1,83 @@
 package repository;
 
-public class ChocolatRepository {
-    private int quantite;
+import domain.enums.GroupeDeChocolatier;
 
-    public ChocolatRepository(int quantiteInitiale) {
-        this.quantite = quantiteInitiale;
+public class ChocolatRepository {
+    private int quantiteN;
+    private int quantiteB;
+
+    public ChocolatRepository() {
+        this.quantiteN = 0;
+        this.quantiteB = 0;
+
     }
 
-    public boolean consommer(int quantiteDemandee) {
-        if (quantite >= quantiteDemandee) {
-            quantite -= quantiteDemandee;
-            return true;
-        } else {
-            return false;
+    public void setQuantiteN(int quantiteN) {
+        this.quantiteN = quantiteN;
+    }
+
+    public void setQuantiteB(int quantiteB) {
+        this.quantiteB = quantiteB;
+    }
+    public boolean peutConsommer(GroupeDeChocolatier groupeDeChocolatier) {
+        if (groupeDeChocolatier == GroupeDeChocolatier.n) {
+            if (quantiteN <= 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+        else {
+            if (quantiteB <= 0) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+    }
+
+    public boolean consommer(GroupeDeChocolatier groupeDeChocolatier) {
+        if (groupeDeChocolatier == GroupeDeChocolatier.n) {
+            if (quantiteN > 0) {
+                quantiteN -= 1;
+                return true;
+            } else {
+                return false;
+            }
+        }
+        else {
+            if (quantiteB > 0) {
+                quantiteB -= 1;
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+    }
+
+    public void approvisionner(int quantiteAjoutee, GroupeDeChocolatier groupeDeChocolatier) {
+        if (groupeDeChocolatier == GroupeDeChocolatier.n) {
+            quantiteN += quantiteAjoutee;
+        }
+        else {
+            quantiteB += quantiteAjoutee;
         }
     }
 
-    public void approvisionner(int quantiteAjoutee) {
-        quantite += quantiteAjoutee;
+    public int getQuantite(GroupeDeChocolatier groupeDeChocolatier) {
+        if (groupeDeChocolatier == GroupeDeChocolatier.n) {
+            return quantiteN;
+        }
+        else {
+            return quantiteB;
+        }
+
     }
 
-    public int getQuantite() {
-        return quantite;
+    public void clear() {
+        this.quantiteN = 0;
+        this.quantiteB = 0;
     }
 }
