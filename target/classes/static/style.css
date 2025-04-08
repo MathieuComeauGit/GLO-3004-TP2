@@ -13,7 +13,6 @@ h1 {
     color: #5d3a00;
 }
 
-/* Initialisation */
 .init-block {
     max-width: 1000px;
     margin: auto;
@@ -69,7 +68,6 @@ button {
     background-color: #992e4c;
 }
 
-/* Dashboard principal */
 .dashboard-container {
     display: flex;
     justify-content: center;
@@ -95,7 +93,6 @@ button {
     margin-bottom: 10px;
 }
 
-/* === CHOCOLATIERS === */
 .choco-wrapper {
     margin-bottom: 20px;
 }
@@ -132,7 +129,6 @@ button {
     color: #4a148c;
 }
 
-/* === MACHINES === */
 .machine-wrapper {
     margin-bottom: 15px;
     opacity: 0.8;
@@ -166,7 +162,6 @@ button {
     font-weight: bold;
 }
 
-/* === INIT BLOCK CLEAN === */
 .init-container {
     margin-top: 20px;
     justify-content: center;
@@ -253,4 +248,27 @@ button {
 .init-actions {
     text-align: center;
     margin-top: 20px;
+}
+
+.stock-column {
+    width: 90%;
+    max-width: 600px;
+    margin: 0 auto 20px auto;
+    background-color: #fff8e1;
+    padding: 15px 25px;
+    border-radius: 10px;
+    border: 1px solid #ffd699;
+    box-shadow: 0 0 8px rgba(0,0,0,0.05);
+    text-align: center;
+}
+
+.stock-group p {
+    font-size: 16px;
+    margin: 8px 0;
+    color: #5d3a00;
+}
+
+.choco-wrapper.rupture .choco-bar {
+    border-left: 6px solid red;
+    background-color: #ffebee;
 }

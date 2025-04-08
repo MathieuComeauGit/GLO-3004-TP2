@@ -28,10 +28,12 @@ async function reset() {
 
 async function loadStatus() {
     const res = await axios.get("/api/status");
-    renderChocolatiers(res.data.chocolatiers);
-    console.log("tempereuses backend:", res.data.tempereuses);
+    renderChocolatiers(res.data.chocolatiers, res.data.tempereuses, res.data.mouleuses);
     renderMachines(res.data.tempereuses, "tempereuse");
     renderMachines(res.data.mouleuses, "mouleuse");
+
+    document.getElementById("stock-n").textContent = res.data.stock.n;
+    document.getElementById("stock-b").textContent = res.data.stock.b;
 }
 
 function renderChocolatiers(chocolatiers) {
@@ -44,9 +46,30 @@ function renderChocolatiers(chocolatiers) {
         const wrapper = document.createElement("div");
         wrapper.className = "choco-wrapper";
 
+        if (choco.etape === "RUPTURE") {
+            wrapper.classList.add("rupture");
+        }
+
         const title = document.createElement("div");
         title.className = "choco-title";
-        title.textContent = "Chocolatier: " + choco.id;
+
+        // Affichage dynamique du statut
+        let statut = "";
+        if (choco.etape === "TEMPERE_CHOCOLAT" || choco.etape === "DONNE_CHOCOLAT") {
+            statut = " (En train de tempérer...)";
+        } else if (["REMPLIT", "GARNIT", "FERME"].includes(choco.etape)) {
+            statut = " (En train de mouler...)";
+        } else if (choco.position_tempereuse === 1) {
+            statut = " (Prochain à tempérer!)";
+        } else if (choco.position_mouleuse === 1) {
+            statut = " (Prochain à mouler!)";
+        } else if (choco.position_tempereuse > 1) {
+            statut = ` (En attente tempérage: position ${choco.position_tempereuse})`;
+        } else if (choco.position_mouleuse > 1) {
+            statut = ` (En attente moulage: position ${choco.position_mouleuse})`;
+        }
+
+        title.textContent = "Chocolatier" + statut;
         wrapper.appendChild(title);
 
         const bar = document.createElement("div");
@@ -54,7 +77,7 @@ function renderChocolatiers(chocolatiers) {
 
         const steps = [
             "AUCUNE", "REQUIERE_TEMPEREUSE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT",
-            "REQUIERE_MOULEUSE", "REMPLIT", "GARNIT", "FERME"
+            "REQUIERE_MOULEUSE", "REMPLIT", "GARNIT", "FERME", "RUPTURE"
         ];
 
         steps.forEach(step => {
@@ -82,7 +105,7 @@ function renderMachines(machines, type) {
     containerB.innerHTML = "";
 
     const stepsMap = {
-        tempereuse: ["AUCUNE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT"], 
+        tempereuse: ["AUCUNE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT"],
         mouleuse: ["AUCUNE", "REMPLIT", "GARNIT", "FERME"]
     };
 
@@ -92,21 +115,18 @@ function renderMachines(machines, type) {
 
         const title = document.createElement("div");
         title.className = "machine-title";
-        title.textContent = `${type.toUpperCase()} ${machine.id.slice(0, 5)} (Choco: ${machine.chocolatier_id ? machine.chocolatier_id.slice(0, 5) : '---'})`;
+        title.textContent = `${type.toUpperCase()} (Choco: ${machine.chocolatier_id ? machine.chocolatier_id.slice(0, 5) : '---'})`;
         wrapper.appendChild(title);
 
         const bar = document.createElement("div");
         bar.className = "machine-bar";
         const steps = stepsMap[type];
+
         steps.forEach(step => {
             const div = document.createElement("div");
             div.classList.add("step");
             div.textContent = step.toLowerCase();
-
-            if (machine.etape === step) {
-                div.classList.add("current");
-            }
-
+            if (machine.etape === step) div.classList.add("current");
             bar.appendChild(div);
         });
 
@@ -114,4 +134,3 @@ function renderMachines(machines, type) {
         (machine.groupe === "n" ? containerN : containerB).appendChild(wrapper);
     });
 }
-

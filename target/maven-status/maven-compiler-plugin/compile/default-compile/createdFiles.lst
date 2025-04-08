@@ -11,13 +11,17 @@ service\TempereuseService$1.class
 exceptions\BadCaseException.class
 service\MouleuseService$1.class
 service\MouleuseService.class
+thread\MouleuseThread.class
 domain\enums\EtapeMouleuse.class
 service\ChocolatierService$1.class
 domain\enums\EtapeChocolatier.class
 service\TempereuseService.class
+service\SimulationService.class
 domain\enums\GroupeDeChocolatier.class
+thread\ChocolatierThread.class
 domain\enums\EtapeTempereuse.class
 domain\Tempereuse.class
+thread\TempereuseThread.class
 domain\AbstractMachine.class
 repository\BaseRepository.class
 repository\MouleuseRepository.class

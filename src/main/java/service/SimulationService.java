@@ -7,6 +7,7 @@ import domain.Mouleuse;
 import domain.Tempereuse;
 import domain.enums.EtapeChocolatier;
 import domain.enums.GroupeDeChocolatier;
+import repository.ChocolatRepository;
 import repository.ChocolatierRepository;
 import repository.MouleuseRepository;
 import repository.TempereuseRepository;
@@ -17,22 +18,29 @@ import thread.TempereuseThread;
 import java.util.*;
 
 public class SimulationService {
-    private final ChocolatierRepository chocolatierRepository = new ChocolatierRepository();
-    private final TempereuseRepository tempereuseRepository = new TempereuseRepository();
-    private final MouleuseRepository mouleuseRepository = new MouleuseRepository();
 
-    private final TempereuseService tempereuseService = new TempereuseService(tempereuseRepository, chocolatierRepository);
-    private final MouleuseService mouleuseService = new MouleuseService(mouleuseRepository, chocolatierRepository);
-    private final ChocolatierService chocolatierService = new ChocolatierService(chocolatierRepository, tempereuseService, mouleuseService);
+    final ChocolatierRepository chocolatierRepository = new ChocolatierRepository();
+    final TempereuseRepository tempereuseRepository = new TempereuseRepository();
+    final MouleuseRepository mouleuseRepository = new MouleuseRepository();
+    final ChocolatRepository chocolatRepository = new ChocolatRepository();
 
-    private final List<ChocolatierThread> chocolatierThreads = new ArrayList<>();
-    private final List<TempereuseThread> tempereuseThreads = new ArrayList<>();
-    private final List<MouleuseThread> mouleuseThreads = new ArrayList<>();
+    final TempereuseService tempereuseService = new TempereuseService(tempereuseRepository, chocolatierRepository, chocolatRepository);
+    final MouleuseService mouleuseService = new MouleuseService(mouleuseRepository, chocolatierRepository);
+    final ChocolatierService chocolatierService = new ChocolatierService(chocolatierRepository, tempereuseService, mouleuseService, chocolatRepository);
+
+    final List<ChocolatierThread> chocolatierThreads = new ArrayList<>();
+    final List<TempereuseThread> tempereuseThreads = new ArrayList<>();
+    final List<MouleuseThread> mouleuseThreads = new ArrayList<>();
 
     public void initSimulation(int chocoN, int chocoB, int tempN, int tempB, int mouleN, int mouleB) {
+
         chocolatierRepository.clear();
         tempereuseRepository.clear();
         mouleuseRepository.clear();
+        chocolatRepository.clear();
+
+        chocolatRepository.setQuantiteN(chocoN);
+        chocolatRepository.setQuantiteB(chocoB);
     
         // TEMPEREUSES N
         for (int i = 0; i < tempN; i++) {
@@ -96,30 +104,43 @@ public class SimulationService {
 
     public JsonObject getEtat() {
         JsonObject res = new JsonObject();
-
-        // Chocolatiers
+    
         JsonArray chocoArray = new JsonArray();
         for (ChocolatierR c : chocolatierRepository.findAll()) {
             JsonObject o = new JsonObject();
             o.addProperty("id", c.getId().toString());
             o.addProperty("groupe", c.getGroupeDeChocolatier().name().toLowerCase());
             o.addProperty("etape", c.getEtape().name());
-            EtapeChocolatier next = chocolatierService.getEtapeSuivantePossible(c);
-            o.addProperty("nextStep", next != null ? next.name() : "AUCUNE");
+        
+            // Récupère la bonne liste selon le groupe pour chaque type de machine
+            LinkedList<ChocolatierR> fileTemp = tempereuseService.getFileAttenteParGroupe()
+                .getOrDefault(c.getGroupeDeChocolatier(), new LinkedList<>());
+            LinkedList<ChocolatierR> fileMoule = mouleuseService.getFileAttenteParGroupe()
+                .getOrDefault(c.getGroupeDeChocolatier(), new LinkedList<>());
+        
+            // Index dans la file, +1 pour affichage humain (commence à 1), -1 si pas dans la liste
+            int posTemp = fileTemp.indexOf(c);
+            int posMoule = fileMoule.indexOf(c);
+            o.addProperty("position_tempereuse", posTemp >= 0 ? posTemp + 1 : -1);
+            o.addProperty("position_mouleuse", posMoule >= 0 ? posMoule + 1 : -1);
+        
             chocoArray.add(o);
         }
-
-        // Tempereuses
+    
+        // Machines
         JsonArray tempArray = tempereuseService.getToutesLesMachinesCommeObjets();
-
-        // Mouleuses
         JsonArray mouleArray = mouleuseService.getToutesLesMachinesCommeObjets();
-
-        // Ajoute tout à la réponse
+    
         res.add("chocolatiers", chocoArray);
         res.add("tempereuses", tempArray);
         res.add("mouleuses", mouleArray);
-
+    
+        // Stock
+        JsonObject stock = new JsonObject();
+        stock.addProperty("n", chocolatRepository.getQuantite(GroupeDeChocolatier.n));
+        stock.addProperty("b", chocolatRepository.getQuantite(GroupeDeChocolatier.b));
+        res.add("stock", stock);
+    
         return res;
     }
     
@@ -134,6 +155,7 @@ public class SimulationService {
         chocolatierRepository.clear();
         tempereuseRepository.clear();
         mouleuseRepository.clear();
+        chocolatRepository.clear();
     }
 
 }

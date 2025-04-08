@@ -6,9 +6,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>🍫 Dashboard de la Simulation Chocolat</h1>
+    <h1>Dashboard de la Simulation Chocolat</h1>
 
-    <!-- Bloc d'initialisation -->
+    <div class="dashboard-container">
+        <div class="stock-column">
+            <h2>Stock de Chocolat</h2>
+            <div class="stock-group">
+                <p><strong>Groupe N:</strong> <span id="stock-n">0</span> unités</p>
+                <p><strong>Groupe B:</strong> <span id="stock-b">0</span> unités</p>
+            </div>
+        </div>
+    </div>
     <div class="dashboard-container init-container">
         <div class="group-column init-column">
             <h2>Initialisation Simulation</h2>
@@ -36,9 +44,7 @@
         </div>
     </div>
 
-    <!-- Sections principales -->
     <div class="dashboard-container">
-        <!-- Groupe N -->
         <div class="group-column">
             <h2>Groupe N</h2>
 
@@ -58,7 +64,6 @@
             </div>
         </div>
 
-        <!-- Groupe B -->
         <div class="group-column">
             <h2>Groupe B</h2>
 
