@@ -66,11 +66,7 @@ public class ChocolatierService {
 
             case RUPTURE:
                 if (chocolatRepository.peutConsommer(chocolatier.getGroupeDeChocolatier())) {
-                    if (temp == null) {
-                        return false;
-                    }
-                    tempereuseService.assignerTempereuse(temp, chocolatier.getId());
-                    next = EtapeChocolatier.TEMPERE_CHOCOLAT;
+                    next = EtapeChocolatier.REQUIERE_TEMPEREUSE;
                     break;
                 }
                 next = EtapeChocolatier.RUPTURE;

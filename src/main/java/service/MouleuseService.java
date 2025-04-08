@@ -103,4 +103,10 @@ public class MouleuseService extends AbstractMachineService<EtapeMouleuse, Moule
         return fileAttenteParGroupe.get(groupe).peek();
     }
     
+    public void reset() {
+        super.reset(); 
+        fileAttenteParGroupe.values().forEach(LinkedList::clear);
+    }
+    
+    
 }

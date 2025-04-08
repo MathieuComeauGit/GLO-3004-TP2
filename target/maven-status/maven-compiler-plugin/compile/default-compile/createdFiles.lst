@@ -14,6 +14,7 @@ service\MouleuseService.class
 thread\MouleuseThread.class
 domain\enums\EtapeMouleuse.class
 service\ChocolatierService$1.class
+thread\ApprovisionnementThread.class
 domain\enums\EtapeChocolatier.class
 service\TempereuseService.class
 service\SimulationService.class

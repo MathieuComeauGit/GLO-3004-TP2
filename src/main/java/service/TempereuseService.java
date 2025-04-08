@@ -99,5 +99,11 @@ public class TempereuseService extends AbstractMachineService<EtapeTempereuse, T
     public ChocolatierR getPremierEnAttente(GroupeDeChocolatier groupe) {
         return fileAttenteParGroupe.get(groupe).peek();
     }
+
+    public void reset() {
+        super.reset(); 
+        fileAttenteParGroupe.values().forEach(LinkedList::clear);
+    }
+    
     
 }
