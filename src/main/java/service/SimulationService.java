@@ -12,6 +12,7 @@ import repository.ChocolatierRepository;
 import repository.MouleuseRepository;
 import repository.TempereuseRepository;
 import thread.ApprovisionnementThread;
+import thread.ChocolatierCountdown;
 import thread.ChocolatierThread;
 import thread.MouleuseThread;
 import thread.TempereuseThread;
@@ -34,15 +35,100 @@ public class SimulationService {
     final List<MouleuseThread> mouleuseThreads = new ArrayList<>();
     ApprovisionnementThread approvisionnementThread;
 
-    public void initSimulation(int chocoN, int chocoB, int tempN, int tempB, int mouleN, int mouleB) {
 
+
+    // Conditions pour l'ordre des chocolatiers
+    private static ChocolatierCountdown chocolatierNCountdown;
+    private static ChocolatierCountdown chocolatierBCountdown;
+
+    private static GroupeDeChocolatier currentGroupeDeChocolatier;
+
+    public static int nombreChocolatiersN = 0;
+    public static int nombreChocolatiersB = 0;
+
+    private void setPriority(GroupeDeChocolatier groupeDeChocolatier, Thread thread) {
+        // 10 is Max priority, 5 if Normal priority
+        int priority = groupeDeChocolatier == GroupeDeChocolatier.n ? 10 : 5;
+        thread.setPriority(5);
+    }
+
+    public static GroupeDeChocolatier getCurrentGroupeDeChocolatier() {
+        return currentGroupeDeChocolatier;
+    }
+    private static void setCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
+        currentGroupeDeChocolatier = groupeDeChocolatier;
+    }
+
+    public static void changeCurrentType() {
+        if (currentGroupeDeChocolatier == GroupeDeChocolatier.n) {
+            setCurrentType(GroupeDeChocolatier.b);
+        }
+        else {
+            setCurrentType(GroupeDeChocolatier.n);
+        }
+    }
+
+    public static boolean isCurrentType(GroupeDeChocolatier groupeDeChocolatier) {
+        return currentGroupeDeChocolatier == groupeDeChocolatier;
+    }
+
+    public static void updateCurrentCountdown(int position, EtapeChocolatier etape) {
+        if (SimulationService.currentGroupeDeChocolatier == GroupeDeChocolatier.n) {
+            SimulationService.chocolatierNCountdown.updateCountdown(position, etape); 
+        } else {
+            SimulationService.chocolatierBCountdown.updateCountdown(position, etape);
+        }
+    }
+
+    public static void resetCurrentCountdown() {
+        if (SimulationService.currentGroupeDeChocolatier == GroupeDeChocolatier.n) {
+            SimulationService.chocolatierNCountdown.resetCountdown();; 
+        } else {
+            SimulationService.chocolatierBCountdown.resetCountdown();
+        }
+    }
+
+    private static boolean isReady = false;
+    public void initSimulation(int chocoN, int chocoB, int tempN, int tempB, int mouleN, int mouleB) {
+        isReady = false;
         chocolatierRepository.clear();
         tempereuseRepository.clear();
         mouleuseRepository.clear();
-        chocolatRepository.clear();
 
         chocolatRepository.setQuantiteN(chocoN);
         chocolatRepository.setQuantiteB(chocoB);
+
+        setCurrentType(GroupeDeChocolatier.b);
+        nombreChocolatiersN = chocoN;
+        nombreChocolatiersB = chocoB;
+
+        // // Initialisation des CountdownLatch
+        SimulationService.chocolatierNCountdown = new ChocolatierCountdown(chocoN, GroupeDeChocolatier.n);
+        SimulationService.chocolatierBCountdown = new ChocolatierCountdown(chocoB, GroupeDeChocolatier.b);
+
+        Map<UUID, ChocolatierThread> chocolatierThreadsMap = new HashMap<>();
+
+        // CHOCOLATIERS N
+        for (int i = 0; i < chocoN; i++) {
+            UUID id = UUID.randomUUID();
+            chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.n));
+            ChocolatierThread c = new ChocolatierThread(id, i, GroupeDeChocolatier.n, chocolatierService);
+            chocolatierThreadsMap.put(id, c);
+            setPriority(GroupeDeChocolatier.n, c);
+            chocolatierThreads.add(c);
+            c.start();
+        }
+    
+        // CHOCOLATIERS B
+        for (int i = 0; i < chocoB; i++) {
+            UUID id = UUID.randomUUID();
+            chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.b));
+            ChocolatierThread c = new ChocolatierThread(id, i, GroupeDeChocolatier.b, chocolatierService);
+            chocolatierThreadsMap.put(id, c);
+            setPriority(GroupeDeChocolatier.b, c);
+            chocolatierThreads.add(c);
+            c.start();
+        }
 
         // TEMPEREUSES N
         for (int i = 0; i < tempN; i++) {
@@ -50,64 +136,60 @@ public class SimulationService {
             Tempereuse temp = new Tempereuse(id, GroupeDeChocolatier.n);
             tempereuseRepository.save(temp);
             TempereuseThread t = new TempereuseThread(id, "temp-n-" + i, tempereuseService);
+            setPriority(GroupeDeChocolatier.n, t);
             tempereuseThreads.add(t);
             t.start();
         }
-
+    
         // TEMPEREUSES B
         for (int i = 0; i < tempB; i++) {
             UUID id = UUID.randomUUID();
             Tempereuse temp = new Tempereuse(id, GroupeDeChocolatier.b);
             tempereuseRepository.save(temp);
             TempereuseThread t = new TempereuseThread(id, "temp-b-" + i, tempereuseService);
+            setPriority(GroupeDeChocolatier.b, t);
             tempereuseThreads.add(t);
             t.start();
         }
-
+    
         // MOULEUSES N
         for (int i = 0; i < mouleN; i++) {
             UUID id = UUID.randomUUID();
             Mouleuse moule = new Mouleuse(id, GroupeDeChocolatier.n);
             mouleuseRepository.save(moule);
             MouleuseThread m = new MouleuseThread(id, "moule-n-" + i, mouleuseService);
+            setPriority(GroupeDeChocolatier.n, m);
             mouleuseThreads.add(m);
             m.start();
         }
-
+    
         // MOULEUSES B
         for (int i = 0; i < mouleB; i++) {
             UUID id = UUID.randomUUID();
             Mouleuse moule = new Mouleuse(id, GroupeDeChocolatier.b);
             mouleuseRepository.save(moule);
             MouleuseThread m = new MouleuseThread(id, "moule-b-" + i, mouleuseService);
+            setPriority(GroupeDeChocolatier.b, m);
             mouleuseThreads.add(m);
             m.start();
         }
 
-        // CHOCOLATIERS N
-        for (int i = 0; i < chocoN; i++) {
-            UUID id = UUID.randomUUID();
-            chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.n));
-            ChocolatierThread c = new ChocolatierThread(id.toString(), GroupeDeChocolatier.n, chocolatierService);
-            chocolatierThreads.add(c);
-            c.start();
-        }
+        tempereuseService.setChocolatierThreadsMap(chocolatierThreadsMap);
+        mouleuseService.setChocolatierThreadsMap(chocolatierThreadsMap);
 
-        // CHOCOLATIERS B
-        for (int i = 0; i < chocoB; i++) {
-            UUID id = UUID.randomUUID();
-            chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.b));
-            ChocolatierThread c = new ChocolatierThread(id.toString(), GroupeDeChocolatier.b, chocolatierService);
-            chocolatierThreads.add(c);
-            c.start();
-        }
 
         // APPROVISIONNEMENT
         approvisionnementThread = new ApprovisionnementThread(chocolatierRepository, chocolatRepository);
         approvisionnementThread.start();
+        isReady = true;
     }
 
     public JsonObject getEtat() {
+        if (!isReady) {
+            JsonObject res = new JsonObject();
+            res.addProperty("status", "initializing");
+            return res;
+        }
         JsonObject res = new JsonObject();
 
         JsonArray chocoArray = new JsonArray();
@@ -115,7 +197,9 @@ public class SimulationService {
             JsonObject o = new JsonObject();
             o.addProperty("id", c.getId().toString());
             o.addProperty("groupe", c.getGroupeDeChocolatier().name().toLowerCase());
-            o.addProperty("etape", c.getEtape().name());
+            EtapeChocolatier etape = c.getEtape();
+            o.addProperty("etape", etape != null ? etape.name() : "inconnu");
+
 
             LinkedList<ChocolatierR> fileTemp = tempereuseService.getFileAttenteParGroupe()
                     .getOrDefault(c.getGroupeDeChocolatier(), new LinkedList<>());

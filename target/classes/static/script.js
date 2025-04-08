@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("initBtn").addEventListener("click", initRun);
     document.getElementById("resetBtn").addEventListener("click", reset);
-    setInterval(loadStatus, 500);
+    setInterval(loadStatus, 1000);
 });
 
 async function initRun() {
@@ -18,8 +18,11 @@ async function initRun() {
         headers: { "Content-Type": "application/json" }
     });
 
-    loadStatus();
+    // Attendre un peu pour laisser le backend démarrer
+    setTimeout(loadStatus, 1000);
 }
+
+
 
 async function reset() {
     await axios.post("/api/reset");
@@ -28,6 +31,13 @@ async function reset() {
 
 async function loadStatus() {
     const res = await axios.get("/api/status");
+
+    // Si le backend n'est pas prêt
+    if (res.data.status === "initializing") {
+        console.log("Simulation en cours d'initialisation...");
+        return;
+    }
+
     renderChocolatiers(res.data.chocolatiers, res.data.tempereuses, res.data.mouleuses);
     renderMachines(res.data.tempereuses, "tempereuse");
     renderMachines(res.data.mouleuses, "mouleuse");
@@ -35,6 +45,7 @@ async function loadStatus() {
     document.getElementById("stock-n").textContent = res.data.stock.n;
     document.getElementById("stock-b").textContent = res.data.stock.b;
 }
+
 
 function renderChocolatiers(chocolatiers) {
     const groupeN = document.getElementById("groupe-n-chocolatiers");

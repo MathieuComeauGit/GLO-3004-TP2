@@ -18,11 +18,13 @@ thread\ApprovisionnementThread.class
 domain\enums\EtapeChocolatier.class
 service\TempereuseService.class
 service\SimulationService.class
+thread\ChocolatierCountdown$1.class
 domain\enums\GroupeDeChocolatier.class
 thread\ChocolatierThread.class
 domain\enums\EtapeTempereuse.class
 domain\Tempereuse.class
 thread\TempereuseThread.class
+thread\ChocolatierCountdown.class
 domain\AbstractMachine.class
 repository\BaseRepository.class
 repository\MouleuseRepository.class

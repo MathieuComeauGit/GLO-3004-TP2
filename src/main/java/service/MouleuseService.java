@@ -10,6 +10,7 @@ import domain.enums.GroupeDeChocolatier;
 import exceptions.BadCaseException;
 import repository.ChocolatierRepository;
 import repository.MouleuseRepository;
+import thread.ChocolatierThread;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -19,12 +20,16 @@ import java.util.UUID;
 public class MouleuseService extends AbstractMachineService<EtapeMouleuse, Mouleuse, MouleuseRepository> {
 
     private final Map<GroupeDeChocolatier, LinkedList<ChocolatierR>> fileAttenteParGroupe = new HashMap<>();
-
+    Map<UUID, ChocolatierThread> chocolatierThreadsMap = new HashMap<>();
 
     public MouleuseService(MouleuseRepository mouleuseRepository, ChocolatierRepository chocolatierRepository) {
         super(mouleuseRepository, chocolatierRepository);
         fileAttenteParGroupe.put(GroupeDeChocolatier.n, new LinkedList<>());
         fileAttenteParGroupe.put(GroupeDeChocolatier.b, new LinkedList<>());
+    }
+
+    public void setChocolatierThreadsMap(Map<UUID, ChocolatierThread> chocolatierThreadsMap) {
+        this.chocolatierThreadsMap = chocolatierThreadsMap;
     }
 
     public void assignerMouleuse(Mouleuse mouleuse, UUID chocolatierId) {
@@ -48,6 +53,8 @@ public class MouleuseService extends AbstractMachineService<EtapeMouleuse, Moule
     
         UUID chocolatierAssocieId = mouleuse.getChocolatierUtilisantId();
         ChocolatierR chocolatierAssocie = chocolatierRepository.findById(chocolatierAssocieId);
+        ChocolatierThread t = chocolatierThreadsMap.get(chocolatierAssocieId);
+        int position = t.getPosition();
     
         EtapeMouleuse current = mouleuse.getEtape();
     
@@ -59,17 +66,30 @@ public class MouleuseService extends AbstractMachineService<EtapeMouleuse, Moule
                 retirerDeFile(chocolatierAssocie);
                 mouleuse.setEtape(EtapeMouleuse.GARNIT);
                 chocolatierAssocie.setEtape(EtapeChocolatier.GARNIT);
+                SimulationService.updateCurrentCountdown(position, EtapeChocolatier.REMPLIT);
                 break;
     
             case GARNIT:
                 mouleuse.setEtape(EtapeMouleuse.FERME);
                 chocolatierAssocie.setEtape(EtapeChocolatier.FERME);
+                SimulationService.updateCurrentCountdown(position, EtapeChocolatier.GARNIT);
                 break;
     
             case FERME:
+                chocolatierAssocie.setEtape(EtapeChocolatier.AUCUNE); 
+                if (chocolatierAssocie.getGroupeDeChocolatier() == GroupeDeChocolatier.n &&
+                    position == SimulationService.nombreChocolatiersN) {
+                    SimulationService.resetCurrentCountdown();
+                    SimulationService.changeCurrentType();
+                } else if (chocolatierAssocie.getGroupeDeChocolatier() == GroupeDeChocolatier.b &&
+                           position == SimulationService.nombreChocolatiersB) {
+                    SimulationService.resetCurrentCountdown();
+                    SimulationService.changeCurrentType();
+                }
+    
                 mouleuse.setEtape(EtapeMouleuse.AUCUNE);
-                chocolatierAssocie.setEtape(EtapeChocolatier.AUCUNE);
                 mouleuse.setChocolatierUtilisantId(null);
+                SimulationService.updateCurrentCountdown(position, EtapeChocolatier.FERME);
                 break;
     
             default:
@@ -78,6 +98,7 @@ public class MouleuseService extends AbstractMachineService<EtapeMouleuse, Moule
     
         return true;
     }
+    
     
 
     public void initialiserMachineGroupe(int nombre, GroupeDeChocolatier groupe) {
@@ -108,5 +129,12 @@ public class MouleuseService extends AbstractMachineService<EtapeMouleuse, Moule
         fileAttenteParGroupe.values().forEach(LinkedList::clear);
     }
     
-    
+    public static Integer getPositionForCurrentThread(HashMap<Integer, Thread> map, Thread thread) {
+        for (HashMap.Entry<Integer, Thread> entry : map.entrySet()) {
+            if (entry.getValue() == thread) {
+                return entry.getKey();
+            }
+        }
+        return null; 
+    }
 }

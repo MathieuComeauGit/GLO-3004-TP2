@@ -29,78 +29,91 @@ public class ChocolatierService {
         this.chocolatRepository = chocolatRepository;
     }
 
-    public boolean avancerEtape(UUID chocolatierId) throws BadCaseException {
+    public boolean avancerEtape(UUID chocolatierId, int position) throws BadCaseException {
         ChocolatierR chocolatier = chocolatierRepository.findById(chocolatierId);
-        if (chocolatier == null) return false;
-
+    
+        if (chocolatier == null) {
+            return false;
+        }
+    
         EtapeChocolatier current = chocolatier.getEtape();
         EtapeChocolatier next = null;
         Tempereuse temp = tempereuseService.getMachineDisponible(chocolatier.getGroupeDeChocolatier());
         Mouleuse m = mouleuseService.getMachineDisponible(chocolatier.getGroupeDeChocolatier());
-
+    
         switch (current) {
             case AUCUNE:
                 next = EtapeChocolatier.REQUIERE_TEMPEREUSE;
                 break;
-
+    
             case REQUIERE_TEMPEREUSE:
-            
                 if (!tempereuseService.chocolatierInFileAttente(chocolatier)) {
                     tempereuseService.requeteMachine(chocolatier);
                 }
-
+    
                 if (!chocolatRepository.peutConsommer(chocolatier.getGroupeDeChocolatier())) {
                     next = EtapeChocolatier.RUPTURE;
                     break;
                 }
-
-                if (tempereuseService.getPremierEnAttente(chocolatier.getGroupeDeChocolatier()) == chocolatier) {
-                    if (temp == null) {
-                        return false;
-                    }
-                    tempereuseService.assignerTempereuse(temp, chocolatier.getId());
-                    next = EtapeChocolatier.TEMPERE_CHOCOLAT;
+    
+                if (temp == null) {
                     break;
                 }
-                return false;
-
+    
+                tempereuseService.assignerTempereuse(temp, chocolatier.getId());
+                next = EtapeChocolatier.TEMPERE_CHOCOLAT;
+                break;
+    
             case RUPTURE:
                 if (chocolatRepository.peutConsommer(chocolatier.getGroupeDeChocolatier())) {
                     next = EtapeChocolatier.REQUIERE_TEMPEREUSE;
-                    break;
+                } else {
+                    next = EtapeChocolatier.RUPTURE;
                 }
-                next = EtapeChocolatier.RUPTURE;
                 break;
-
+    
             case TEMPERE_CHOCOLAT:
             case DONNE_CHOCOLAT:
                 return false;
-
+    
             case REQUIERE_MOULEUSE:
-
                 if (!mouleuseService.chocolatierInFileAttente(chocolatier)) {
                     mouleuseService.requeteMachine(chocolatier);
                 }
-                if (mouleuseService.getPremierEnAttente(chocolatier.getGroupeDeChocolatier()) == chocolatier) {
-                    if (m == null) {
-                        return false;
-                    }
-                    mouleuseService.assignerMouleuse(m, chocolatier.getId());
-                    next = EtapeChocolatier.REMPLIT;
-                    break;
+    
+                if (m == null) {
+                    return false;
                 }
-
+    
+                mouleuseService.assignerMouleuse(m, chocolatier.getId());
+                next = EtapeChocolatier.REMPLIT;
+                break;
+    
             case REMPLIT:
             case GARNIT:
             case FERME:
                 return false;
-
+    
             default:
                 throw new BadCaseException("État du chocolatier inconnu.");
         }
-
-        chocolatier.setEtape(next);
+    
+        if (next != null) {
+            chocolatier.setEtape(next);
+            if (isEtapeSynchronisee(next)) {
+                SimulationService.updateCurrentCountdown(position, next);
+            }
+        }
+    
         return true;
+    }
+    
+    private boolean isEtapeSynchronisee(EtapeChocolatier etape) {
+        return etape == EtapeChocolatier.TEMPERE_CHOCOLAT ||
+               etape == EtapeChocolatier.DONNE_CHOCOLAT ||
+               etape == EtapeChocolatier.REMPLIT ||
+               etape == EtapeChocolatier.GARNIT ||
+               etape == EtapeChocolatier.FERME;
     }
 
     public JsonObject getEtatCompletJson(TempereuseService tempService, MouleuseService mouleService) {

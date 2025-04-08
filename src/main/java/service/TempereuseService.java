@@ -8,6 +8,7 @@ import domain.enums.GroupeDeChocolatier;
 import repository.ChocolatRepository;
 import repository.ChocolatierRepository;
 import repository.TempereuseRepository;
+import thread.ChocolatierThread;
 import exceptions.BadCaseException;
 
 import java.util.HashMap;
@@ -18,6 +19,7 @@ import java.util.UUID;
 public class TempereuseService extends AbstractMachineService<EtapeTempereuse, Tempereuse, TempereuseRepository> {
 
     private final Map<GroupeDeChocolatier, LinkedList<ChocolatierR>> fileAttenteParGroupe = new HashMap<>();
+    Map<UUID, ChocolatierThread> chocolatierThreadsMap = new HashMap<>();
     private final ChocolatRepository chocolatRepository;
 
     public TempereuseService(TempereuseRepository tempereuseRepository, ChocolatierRepository chocolatierRepository, ChocolatRepository chocolatRepository) {
@@ -31,7 +33,10 @@ public class TempereuseService extends AbstractMachineService<EtapeTempereuse, T
         tempereuse.setChocolatierUtilisantId(chocolatierId);
         tempereuse.setEtape(EtapeTempereuse.TEMPERE_CHOCOLAT);
     }
-    
+
+    public void setChocolatierThreadsMap(Map<UUID, ChocolatierThread> chocolatierThreadsMap) {
+        this.chocolatierThreadsMap = chocolatierThreadsMap;
+    }
 
     public Map<GroupeDeChocolatier, LinkedList<ChocolatierR>> getFileAttenteParGroupe() {
         return fileAttenteParGroupe;
@@ -51,7 +56,10 @@ public class TempereuseService extends AbstractMachineService<EtapeTempereuse, T
             return false;
     
         EtapeTempereuse current = tempereuse.getEtape();
-    
+        ChocolatierThread t = chocolatierThreadsMap.get(chocolatierAssocieId);
+        int position = t.getPosition();
+        
+
         switch (current) {
             case AUCUNE:
                 return false;
@@ -61,12 +69,14 @@ public class TempereuseService extends AbstractMachineService<EtapeTempereuse, T
                 chocolatRepository.consommer(chocolatierAssocie.getGroupeDeChocolatier());
                 tempereuse.setEtape(EtapeTempereuse.DONNE_CHOCOLAT);
                 chocolatierAssocie.setEtape(EtapeChocolatier.DONNE_CHOCOLAT);
+                SimulationService.updateCurrentCountdown(position, EtapeChocolatier.TEMPERE_CHOCOLAT);
                 break;
         
             case DONNE_CHOCOLAT:
                 tempereuse.setEtape(EtapeTempereuse.AUCUNE);
                 chocolatierAssocie.setEtape(EtapeChocolatier.REQUIERE_MOULEUSE);
                 tempereuse.setChocolatierUtilisantId(null);
+                SimulationService.updateCurrentCountdown(position, EtapeChocolatier.DONNE_CHOCOLAT);
                 break;
         
             default:
@@ -105,5 +115,5 @@ public class TempereuseService extends AbstractMachineService<EtapeTempereuse, T
         fileAttenteParGroupe.values().forEach(LinkedList::clear);
     }
     
-    
+
 }
