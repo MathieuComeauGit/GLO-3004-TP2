@@ -1,18 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("initBtn").addEventListener("click", initRun);
     document.getElementById("resetBtn").addEventListener("click", reset);
-    document.getElementById("initBtnN").addEventListener("click", () => initGroup('n'));
-    document.getElementById("initBtnB").addEventListener("click", () => initGroup('b'));
-    loadStatus();
+    setInterval(loadStatus, 500);
 });
 
-async function initGroup(group) {
+async function initRun() {
     const payload = {
-        chocolatiers: parseInt(document.getElementById(`nbChoco${group.toUpperCase()}`).value),
-        tempereuses: parseInt(document.getElementById(`nbTemp${group.toUpperCase()}`).value),
-        mouleuses: parseInt(document.getElementById(`nbMoule${group.toUpperCase()}`).value),
-        groupe: group
+        chocolatiersN: parseInt(document.getElementById("nbChocoN").value),
+        chocolatiersB: parseInt(document.getElementById("nbChocoB").value),
+        tempereusesN: parseInt(document.getElementById("nbTempN").value),
+        tempereusesB: parseInt(document.getElementById("nbTempB").value),
+        mouleusesN: parseInt(document.getElementById("nbMouleN").value),
+        mouleusesB: parseInt(document.getElementById("nbMouleB").value),
     };
-    await axios.post(`/api/init_groupe`, payload);
+
+    await axios.post("/api/init_run", payload, {
+        headers: { "Content-Type": "application/json" }
+    });
+
     loadStatus();
 }
 
@@ -23,10 +28,10 @@ async function reset() {
 
 async function loadStatus() {
     const res = await axios.get("/api/status");
-    const data = res.data;
-    renderChocolatiers(data.chocolatiers);
-    renderTempereuses(data.tempereuses);
-    renderMouleuses(data.mouleuses);
+    renderChocolatiers(res.data.chocolatiers);
+    console.log("tempereuses backend:", res.data.tempereuses);
+    renderMachines(res.data.tempereuses, "tempereuse");
+    renderMachines(res.data.mouleuses, "mouleuse");
 }
 
 function renderChocolatiers(chocolatiers) {
@@ -36,85 +41,77 @@ function renderChocolatiers(chocolatiers) {
     groupeB.innerHTML = "";
 
     chocolatiers.forEach(choco => {
-        const div = document.createElement("div");
-        div.classList.add("status-card");
-        div.innerHTML = `<span><b>Étape:</b> ${choco.etape}</span>`;
+        const wrapper = document.createElement("div");
+        wrapper.className = "choco-wrapper";
 
-        if (choco.nextStep && choco.nextStep !== "BLOCKED") {
-            const label = document.createElement("label");
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.addEventListener("change", () => changerEtapeChocolatier(choco.id));
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(` Aller à ${choco.nextStep}`));
-            div.appendChild(label);
-        }
+        const title = document.createElement("div");
+        title.className = "choco-title";
+        title.textContent = "Chocolatier: " + choco.id;
+        wrapper.appendChild(title);
 
-        (choco.groupe === "n" ? groupeN : groupeB).appendChild(div);
+        const bar = document.createElement("div");
+        bar.className = "choco-bar";
+
+        const steps = [
+            "AUCUNE", "REQUIERE_TEMPEREUSE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT",
+            "REQUIERE_MOULEUSE", "REMPLIT", "GARNIT", "FERME"
+        ];
+
+        steps.forEach(step => {
+            const div = document.createElement("div");
+            div.classList.add("step");
+            div.textContent = step.replace("_", " ").toLowerCase();
+
+            if (choco.etape === step) div.classList.add("current");
+            if (["TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT", "REMPLIT", "GARNIT", "FERME"].includes(step)) {
+                div.classList.add("machine-controlled");
+            }
+
+            bar.appendChild(div);
+        });
+
+        wrapper.appendChild(bar);
+        (choco.groupe === "n" ? groupeN : groupeB).appendChild(wrapper);
     });
 }
 
-function renderTempereuses(tempereuses) {
-    const groupeN = document.getElementById("groupe-n-tempereuses");
-    const groupeB = document.getElementById("groupe-b-tempereuses");
-    groupeN.innerHTML = "";
-    groupeB.innerHTML = "";
+function renderMachines(machines, type) {
+    const containerN = document.getElementById(`groupe-n-${type}s`);
+    const containerB = document.getElementById(`groupe-b-${type}s`);
+    containerN.innerHTML = "";
+    containerB.innerHTML = "";
 
-    tempereuses.forEach(temp => {
-        const div = document.createElement("div");
-        div.classList.add("status-card");
-        div.innerHTML = `<span><b>Étape:</b> ${temp.etape}</span>`;
+    const stepsMap = {
+        tempereuse: ["AUCUNE", "TEMPERE_CHOCOLAT", "DONNE_CHOCOLAT"], 
+        mouleuse: ["AUCUNE", "REMPLIT", "GARNIT", "FERME"]
+    };
 
-        if (temp.nextStep && temp.chocolatier_id) {
-            const label = document.createElement("label");
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.addEventListener("change", () => changerEtapeTempereuse(temp.id));
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(` Aller à ${temp.nextStep}`));
-            div.appendChild(label);
-        }
+    machines.forEach(machine => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "machine-wrapper";
 
-        (temp.groupe === "n" ? groupeN : groupeB).appendChild(div);
+        const title = document.createElement("div");
+        title.className = "machine-title";
+        title.textContent = `${type.toUpperCase()} ${machine.id.slice(0, 5)} (Choco: ${machine.chocolatier_id ? machine.chocolatier_id.slice(0, 5) : '---'})`;
+        wrapper.appendChild(title);
+
+        const bar = document.createElement("div");
+        bar.className = "machine-bar";
+        const steps = stepsMap[type];
+        steps.forEach(step => {
+            const div = document.createElement("div");
+            div.classList.add("step");
+            div.textContent = step.toLowerCase();
+
+            if (machine.etape === step) {
+                div.classList.add("current");
+            }
+
+            bar.appendChild(div);
+        });
+
+        wrapper.appendChild(bar);
+        (machine.groupe === "n" ? containerN : containerB).appendChild(wrapper);
     });
 }
 
-function renderMouleuses(mouleuses) {
-    const groupeN = document.getElementById("groupe-n-mouleuses");
-    const groupeB = document.getElementById("groupe-b-mouleuses");
-    groupeN.innerHTML = "";
-    groupeB.innerHTML = "";
-
-    mouleuses.forEach(moule => {
-        const div = document.createElement("div");
-        div.classList.add("status-card");
-        div.innerHTML = `<span><b>Étape:</b> ${moule.etape}</span>`;
-
-        if (moule.nextStep && moule.chocolatier_id) {
-            const label = document.createElement("label");
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.addEventListener("change", () => changerEtapeMouleuse(moule.id));
-            label.appendChild(checkbox);
-            label.appendChild(document.createTextNode(` Aller à ${moule.nextStep}`));
-            div.appendChild(label);
-        }
-
-        (moule.groupe === "n" ? groupeN : groupeB).appendChild(div);
-    });
-}
-
-async function changerEtapeChocolatier(id) {
-    await axios.post("/api/change_etape", { id });
-    loadStatus();
-}
-
-async function changerEtapeTempereuse(id) {
-    await axios.post("/api/change_etape_tempereuse", { id });
-    loadStatus();
-}
-
-async function changerEtapeMouleuse(id) {
-    await axios.post("/api/change_etape_mouleuse", { id });
-    loadStatus();
-}
