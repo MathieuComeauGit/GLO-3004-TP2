@@ -17,6 +17,11 @@ import thread.TempereuseThread;
 
 import java.util.*;
 
+/**
+ * Service principal de simulation.
+ * Gère l'initialisation des chocolatiers, tempéreuses, mouleuses et approvisionnement,
+ * ainsi que le suivi de l'état global du système.
+ */
 public class SimulationService {
 
     final ChocolatierRepository chocolatierRepository = new ChocolatierRepository();
@@ -33,6 +38,16 @@ public class SimulationService {
     final List<MouleuseThread> mouleuseThreads = new ArrayList<>();
     ApprovisionnementThread approvisionnementThread;
 
+    /**
+     * Initialise la simulation avec les quantités et entités requises.
+     *
+     * @param chocoN  Nombre de chocolatiers du groupe N
+     * @param chocoB  Nombre de chocolatiers du groupe B
+     * @param tempN   Nombre de tempéreuses du groupe N
+     * @param tempB   Nombre de tempéreuses du groupe B
+     * @param mouleN  Nombre de mouleuses du groupe N
+     * @param mouleB  Nombre de mouleuses du groupe B
+     */
     public void initSimulation(int chocoN, int chocoB, int tempN, int tempB, int mouleN, int mouleB) {
 
         chocolatierRepository.clear();
@@ -82,8 +97,8 @@ public class SimulationService {
             Mouleuse moule = new Mouleuse(id, GroupeDeChocolatier.b);
             mouleuseRepository.save(moule);
             MouleuseThread m = new MouleuseThread(id, "moule-b-" + i, mouleuseService);
-            mouleuseThreads.add(m);
             m.setPriority(5);
+            mouleuseThreads.add(m);
             m.start();
         }
 
@@ -102,8 +117,8 @@ public class SimulationService {
             UUID id = UUID.randomUUID();
             chocolatierRepository.save(new ChocolatierR(id, GroupeDeChocolatier.b));
             ChocolatierThread c = new ChocolatierThread(id, chocolatierService);
-            chocolatierThreads.add(c);
             c.setPriority(5);
+            chocolatierThreads.add(c);
             c.start();
         }
 
@@ -112,6 +127,11 @@ public class SimulationService {
         approvisionnementThread.start();
     }
 
+    /**
+     * Retourne l’état global du système de simulation.
+     *
+     * @return Un objet JSON contenant les chocolatiers, machines et stock
+     */
     public JsonObject getEtat() {
         JsonObject res = new JsonObject();
 
@@ -147,6 +167,9 @@ public class SimulationService {
         return res;
     }
 
+    /**
+     * Réinitialise la simulation : interrompt tous les threads et vide les dépôts.
+     */
     public void reset() {
         chocolatierThreads.forEach(Thread::interrupt);
         tempereuseThreads.forEach(Thread::interrupt);

@@ -25,7 +25,7 @@ public class ApprovisionnementThread extends Thread {
             while (true) {
                 approvisionnerSiNecessaire(GroupeDeChocolatier.n);
                 approvisionnerSiNecessaire(GroupeDeChocolatier.b);
-                Thread.sleep(1000); // polling 1 seconde
+                Thread.sleep(1000); 
             }
         } catch (InterruptedException e) {
             System.out.println("[APPRO] Thread interrompu.");
